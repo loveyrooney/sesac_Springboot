@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.0.min.js" ></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <style>
+      .d-none {display : none;}
+   </style>
+    <script>
+        function signup(){
+            let form = document.querySelector(".signup");
+            console.log(form.userid.value);
+            axios({
+                method: "post",
+                url: "/user/signup",
+                data: {userid : form.userid.value, password: form.password.value, nickname: form.nickname.value}
+            })
+            .then((res)=>{
+                console.log(res.data);
+                alert("Welcome "+ res.data);
+<!--                $("input[name=nickname]").addClass = "d-none";-->
+<!--                $(".signin").removeClass = "d-none";-->
+            });
+        }
+        function signin(){
+            let form = document.querySelector(".signup");
+            axios({
+                method: "get",
+                url: "/user/signin",
+                data: {userid : form.userid.value, password: form.password.value }
+            })
+            .then((res)=>{
+                console.log(res.data);
+        }
+    </script>
+</head>
+<body>
+  <form class="signup">
+    id :  <input type="text" name="userid">
+      <br>
+    pw : <input type="text" name="password">
+    <br>
+    nickname :  <input type="text" name="nickname">
+      <br>
+    <button class="signup" type="button" onclick="signup()">sign up</button>
+      <button class="signin d-none" type="button" onclick="signin()">sign in</button>
+  </form>
+
+</body>
+</html>
