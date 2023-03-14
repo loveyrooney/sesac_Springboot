@@ -3,7 +3,7 @@ package sesac_spring.springAPI.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import sesac_spring.springAPI.DTO.DTOController;
+import sesac_spring.springAPI.dto.DTOController;
 import sesac_spring.springAPI.VO.UserVO;
 
 @Controller

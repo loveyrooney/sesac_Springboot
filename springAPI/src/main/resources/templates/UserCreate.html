@@ -24,15 +24,16 @@
 <!--                $(".signin").removeClass = "d-none";-->
             });
         }
-        function signin(){
+        function signIn(){
             let form = document.querySelector(".signup");
             axios({
                 method: "get",
-                url: "/user/signin",
-                data: {userid : form.userid.value, password: form.password.value }
+                url: "/user/signIn",
+                params : {userid : form.userid.value, password: form.password.value, nickname:form.nickname.value}
             })
             .then((res)=>{
                 console.log(res.data);
+        });
         }
     </script>
 </head>
@@ -45,7 +46,7 @@
     nickname :  <input type="text" name="nickname">
       <br>
     <button class="signup" type="button" onclick="signup()">sign up</button>
-      <button class="signin d-none" type="button" onclick="signin()">sign in</button>
+      <button class="" type="button" onclick="signIn()">sign in</button>
   </form>
 
 </body>

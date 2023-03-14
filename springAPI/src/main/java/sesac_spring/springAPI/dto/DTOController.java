@@ -1,8 +1,4 @@
-package sesac_spring.springAPI.DTO;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+package sesac_spring.springAPI.dto;
 
 public class DTOController {
 
