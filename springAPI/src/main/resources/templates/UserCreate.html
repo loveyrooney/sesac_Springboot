@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-  <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.0.min.js" ></script>
+    <title>User Home</title>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
       .d-none {display : none;}
@@ -20,8 +19,6 @@
             .then((res)=>{
                 console.log(res.data);
                 alert("Welcome "+ res.data);
-<!--                $("input[name=nickname]").addClass = "d-none";-->
-<!--                $(".signin").removeClass = "d-none";-->
             });
         }
         function signIn(){
@@ -33,6 +30,9 @@
             })
             .then((res)=>{
                 console.log(res.data);
+                if(res.data == "id not found") alert("id를 찾을 수 없습니다");
+                else if(res.data == "pw error") alert("비밀번호가 틀렸습니다");
+                else location.href = `/user/${res.data}`;
         });
         }
     </script>

@@ -32,13 +32,15 @@ public class MainService {
 
     public List<UserDTO> getAUser(String userid){
         List<User> result = mainMapper.retrieveOne(userid);
-        System.out.println("result" + result.get(0).getUserid());
+        //System.out.println("result1" + result);
         List<UserDTO> AUser = new ArrayList<UserDTO>();
-        UserDTO domainAUser = new UserDTO();
-
-        domainAUser.setUserid(result.get(0).getUserid());
-        domainAUser.setPassword(result.get(0).getPassword());
-        AUser.add(domainAUser);
+        if(result.size() != 0) {
+            System.out.println("result " + result.get(0).getUserid());
+            UserDTO domainAUser = new UserDTO();
+            domainAUser.setUserid(result.get(0).getUserid());
+            domainAUser.setPassword(result.get(0).getPassword());
+            AUser.add(domainAUser);
+        }
         return AUser;
     }
 
@@ -48,5 +50,21 @@ public class MainService {
         newDomainUser.setPassword(newUser.getPassword());
         newDomainUser.setNickname(newUser.getNickname());
         mainMapper.insertUser(newDomainUser);
+    }
+
+    public void fixUser(UserDTO updateUser) {
+        List<User> result = mainMapper.retrieveOne(updateUser.getUserid());
+        result.get(0).setNickname(updateUser.getNickname());
+        result.get(0).setPassword(updateUser.getPassword());
+        mainMapper.updateUser(result.get(0));
+        System.out.println("up "+ result);
+    }
+
+    public void removeUser(UserDTO deleteUser) {
+        User delUser = new User();
+        delUser.setUserid(deleteUser.getUserid());
+        delUser.setPassword(deleteUser.getPassword());
+        delUser.setNickname(deleteUser.getNickname());
+        mainMapper.deleteUser(delUser);
     }
 }

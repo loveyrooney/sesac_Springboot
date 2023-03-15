@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Mypage</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <h1 th:text = "'Welcome, ' + ${user[0]}"></h1>
+  <form class="update">
+      id :  <input type="text" name="userid" th:value="${user[0]}" disabled>
+      <br>
+      pw : <input type="text" th:value="${user[1]}" name="password">
+      <br>
+      nickname :  <input type="text" th:value="${user[2]}" name="nickname">
+      <br>
+      <button id="update" type="button" onClick="modify()">회원정보수정</button>
+      <button id="delete" type="button" onClick="remover()">회원탈퇴</button>
+  </form>
+  <script>
+        function modify() {
+            let form = document.querySelector(".update");
+            if(form.password.value == "" || form.nickname.value == "") alert("정보를 기입해 주세요");
+            else {
+                axios({
+                    method: "post",
+                    url: "/user/update",
+                    data: { userid: form.userid.value, password: form.password.value, nickname: form.nickname.value}
+                })
+                .then((res)=>{
+                    console.log(res.data);
+                });
+            }
+         }
+
+        function remover() {
+            if(window.confirm("정말로 탈퇴하시겠습니까?")) {
+            let form = document.querySelector(".update");
+                axios({
+                    method: "post",
+                    url: "/user/delete",
+                    data: { userid: form.userid.value }
+                })
+                .then((res)=>{
+                    console.log(res.data);
+                });
+            }
+        }
+  </script>
+</body>
+</html>
