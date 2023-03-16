@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Board</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.0.min.js" ></script>
+</head>
+<body>
+<h3>Board</h3>
+<form class="form">
+    <input type="text" name="name" placeholder="작성자">
+    <input type="text" name="pw" placeholder="비밀번호">
+    <br>
+    <textarea name="content" style="width:300px; height:100px;" placeholder="내용을 입력하세요"></textarea>
+    <br>
+    <button type="button" onclick="createBoard()">등록</button>
+</form>
+<br>
+<table>
+    <tr>
+        <th>No.</th>
+        <th>이름</th>
+        <th>내용</th>
+        <th>수정/삭제</th>
+    </tr>
+    <tr th:each="board:${list}" th:classappend="${board.getId()}">
+        <td th:text="${board.getId()}">번호</td>
+        <td th:text="${board.getName()}">이름</td>
+        <td th:text="${board.getContent()}">내용</td>
+        <td><button type="button" onclick="updateBoard(this)">수정</button>
+            <button type="button" onclick="deleteBoard(this)">삭제</button></td>
+    </tr>
+</table>
+<script>
+    function createBoard() {
+        let form = document.querySelector(".form");
+        if(form.name.value == "" || form.pw.value == "" || form.content.value == "") alert('정보를 모두 입력해주세요!');
+        else { axios.post(`/write`,{name: form.name.value, pw: form.pw.value, content: form.content.value})
+        .then((res)=>{
+            alert('글 등록이 완료 되었습니다!');
+            document.location.href = "/";
+        });
+        }
+    }
+
+    function updateBoard(e) {
+        console.log($(e.parentNode.parentNode).attr('class'));
+        axios.post(`/modify`, {id : $(e.parentNode.parentNode).attr('class') })
+        .then((res)=>{
+            console.log(res.data);
+        });
+    }
+</script>
+</body>
+</html>

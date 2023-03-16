@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import sesac.sesac.MyBatis.domain.User;
+import sesac.sesac.MyBatis.domain.UserEntity;
 import sesac.sesac.MyBatis.dto.UserDTO;
 import sesac.sesac.MyBatis.service.MainService;
 
@@ -26,13 +27,21 @@ public class MainController {
     @GetMapping("/user/insert")
     public String getInsertUser(@RequestParam String name, @RequestParam String nickname, Model model) {
         //domain을 컨트롤러에 다이렉트로 불러오는 것은 좋지 않다. 서비스를 경유할 것
-        UserDTO user = new UserDTO();
+        //UserDTO user = new UserDTO();
+        UserEntity user = new UserEntity();
         user.setName(name);
         user.setNickname(nickname);
 
         mainService.addUser(user);
 
         model.addAttribute("list", null);
+        return "user";
+    }
+
+    @GetMapping("/user")
+    public String getUser(@RequestParam String name, Model model) {
+        ArrayList<UserDTO> userList = mainService.getUserName(name);
+        model.addAttribute("list", userList);
         return "user";
     }
 
