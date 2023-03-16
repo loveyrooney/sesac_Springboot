@@ -14,9 +14,12 @@ public interface MainMapper {
     @Insert("insert into users(userid, password, nickname) values(#{userid},#{password},#{nickname})")
     void insertUser(User user);
 
-    @Update("update table users set password = #{password}, nickname = #{nickname} where userid = #{userid}")
+    //보내는 파람이 2개이상이면 파람 어노테이션 쓰거나 변수명을 param1, param2 이런식으로 지정해야됨
+    @Select("select * from users where userid = #{userid} and password = #{password} limit 1")
+    User getUser(@Param("userid") String userid, @Param("password") String password);
+    @Update("update users set password = #{password}, nickname = #{nickname} where userid = #{userid}")
     void updateUser(User user);
 
     @Delete("delete from users where userid = #{userid}")
-    void deleteUser(User user);
+    void deleteUser(String userid);
 }

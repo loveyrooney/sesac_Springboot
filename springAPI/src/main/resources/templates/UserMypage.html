@@ -6,13 +6,13 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-  <h1 th:text = "'Welcome, ' + ${user[0]}"></h1>
+  <h1 th:text = "'Welcome, ' + ${user.getUserid()}"></h1>
   <form class="update">
-      id :  <input type="text" name="userid" th:value="${user[0]}" disabled>
+      id :  <input type="text" name="userid" th:value="${user.getUserid()}" disabled>
       <br>
-      pw : <input type="text" th:value="${user[1]}" name="password">
+      pw : <input type="text" th:value="${user.getPassword()}" name="password">
       <br>
-      nickname :  <input type="text" th:value="${user[2]}" name="nickname">
+      nickname :  <input type="text" th:value="${user.getNickname()}" name="nickname">
       <br>
       <button id="update" type="button" onClick="modify()">회원정보수정</button>
       <button id="delete" type="button" onClick="remover()">회원탈퇴</button>
@@ -24,11 +24,13 @@
             else {
                 axios({
                     method: "post",
-                    url: "/user/update",
+                    url: "/user/info/update",
                     data: { userid: form.userid.value, password: form.password.value, nickname: form.nickname.value}
                 })
                 .then((res)=>{
                     console.log(res.data);
+                    alert('회원정보 수정 완료!');
+                    document.location.href = "/user";
                 });
             }
          }
@@ -38,11 +40,13 @@
             let form = document.querySelector(".update");
                 axios({
                     method: "post",
-                    url: "/user/delete",
+                    url: "/user/info/delete",
                     data: { userid: form.userid.value }
                 })
                 .then((res)=>{
                     console.log(res.data);
+                    alert('회원 탈퇴되었습니다.');
+                    document.location.href = "/user";
                 });
             }
         }
