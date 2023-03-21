@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Board Write</title>
+</head>
+<body>
+<header style="display:flex">
+  <h1 style="margin-right: 20px;"><a href="/">Board</a></h1>
+  <h1 style="margin-right: 20px;"><a href="/loginHome">login</a></h1>
+</header>
+<form method="post" action="/boardWrite">
+  <div style="display:flex">
+    <p style="margin-right: 20px;"><input type="text" placeholder="title"></p>
+    <p style="margin-right: 20px;">th: getname() writer</p>
+    <p style="margin-right: 20px;">new date</p>
+  </div>
+  <hr>
+  <textarea></textarea>
+  <br>
+  <button type="submit">등록</button>
+</form>
+</body>
+</html>

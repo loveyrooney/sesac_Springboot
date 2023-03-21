@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<header style="display:flex">
+  <h1 style="margin-right: 20px;"><a href="/">Board</a></h1>
+  <h1 style="margin-right: 20px;"><a href="/loginHome">login</a></h1>
+</header>
+<div>
+    <h3>login</h3>
+    <form method="post" action="/login">
+      <input type="text" placeholder="id"/><br>
+      <input type="text" placeholder="pw"/><br>
+      <button type="submit">login</button>
+      <a th:href="@{/signupHome}">회원가입</a>
+    </form>
+</div>
+</body>
+</html>

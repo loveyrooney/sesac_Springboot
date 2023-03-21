@@ -22,9 +22,36 @@ public class MainController {
     public String home(Model model) {
         ArrayList<BoardDTO> boardList = (ArrayList<BoardDTO>) mainService.getBoardList();
         model.addAttribute("list",boardList);
-        return "BoardHome";
+        return "Main";
     }
 
+    @GetMapping("/content")
+    public String content(Model model) {
+        //ArrayList<BoardDTO> boardList = (ArrayList<BoardDTO>) mainService.getBoardList();
+        //model.addAttribute("list",boardList);
+        return "boardContent";
+    }
+
+    @GetMapping("/write")
+    public String write(Model model) {
+        //ArrayList<BoardDTO> boardList = (ArrayList<BoardDTO>) mainService.getBoardList();
+        //model.addAttribute("list",boardList);
+        return "boardWrite";
+    }
+
+    @GetMapping("/loginHome")
+    public String loginHome(Model model) {
+        //ArrayList<BoardDTO> boardList = (ArrayList<BoardDTO>) mainService.getBoardList();
+        //model.addAttribute("list",boardList);
+        return "login";
+    }
+
+    @GetMapping("/signupHome")
+    public String signupHome(Model model) {
+        //ArrayList<BoardDTO> boardList = (ArrayList<BoardDTO>) mainService.getBoardList();
+        //model.addAttribute("list",boardList);
+        return "signup";
+    }
     @PostMapping("/write")
     @ResponseBody
     public String boardCreate(@RequestBody BoardEntity boardEntity){

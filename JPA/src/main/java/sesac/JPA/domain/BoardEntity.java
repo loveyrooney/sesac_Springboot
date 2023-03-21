@@ -11,17 +11,22 @@ import javax.persistence.*;
 @Setter
 public class BoardEntity {
 
+    @OneToOne(mappedBy = "Board")
+    private ReplyEntity replyEntity;
     @Id
     @GeneratedValue
-    private int id;
+    private int boardId;
 
-    @Column(length = 10, nullable = false)
-    private String name;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="userId",referencedColumnName = "id")
 
-    @Column(length = 10, nullable = false)
-    private String pw;
+    @Column(length = 30, nullable = false)
+    private String title;
 
-    @Column(length = 500, nullable = false)
+    @Lob
     private String content;
+
+    @Column(length = 20, nullable = false)
+    private String date;
 
 }
