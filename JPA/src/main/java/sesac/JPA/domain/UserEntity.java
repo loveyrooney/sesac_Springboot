@@ -10,13 +10,9 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class UserEntity {
-    @OneToOne(mappedBy = "User")
-    private ReplyEntity replyEntity;
-    @OneToOne(mappedBy = "User")
-    private BoardEntity boardEntity;
 
     @Id
-    @Column(length = 20, nullable = false)
+    @Column(length = 20, nullable = false , name="userId")
     private String id;
 
     @Column(length = 20, nullable = false)

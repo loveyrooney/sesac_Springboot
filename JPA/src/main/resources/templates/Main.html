@@ -16,10 +16,10 @@
     <p style="margin-right: 20px;">제목</p>
     <p style="margin-right: 20px;">일시</p>
   </div>
-  <div style="display:flex" th:each="board:${list}" th:classappend="${board.getId()}">
-    <p style="margin-right: 20px;" th:text="${board.getName()}">작성자</p>
-    <p style="margin-right: 20px;"><a th:href="@{/content}" th:text="${board.getContent()}"></a></p>
-    <p style="margin-right: 20px;" th:text="${board.getId()}">일시</p>
+  <div style="display:flex" th:each="board:${list}" th:classappend="${board.getBoardId()}">
+    <p style="margin-right: 20px;" th:text="${board.getUserId()}">작성자</p>
+    <p style="margin-right: 20px;"><a th:href="@{/content}" th:text="${board.getTitle()}"></a></p>
+    <p style="margin-right: 20px;" th:text="${board.getDate()}">일시</p>
   </div>
 </div>
 <form>

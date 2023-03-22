@@ -10,15 +10,13 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class BoardEntity {
-
-    @OneToOne(mappedBy = "Board")
-    private ReplyEntity replyEntity;
     @Id
     @GeneratedValue
     private int boardId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="userId",referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name="userId")
+    private UserEntity userEntity;
 
     @Column(length = 30, nullable = false)
     private String title;

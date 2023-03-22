@@ -8,13 +8,13 @@ public class ReplyEntity {
 
     @Id
     @GeneratedValue
-    private int id;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="userId", referencedColumnName = "id")
+    private int replyId;
+    @ManyToOne
+    @JoinColumn(name="userId")
     private UserEntity userEntity;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="boardId", referencedColumnName = "boardId")
+    @ManyToOne
+    @JoinColumn(name="boardId")
     private BoardEntity boardEntity;
 
     @Lob

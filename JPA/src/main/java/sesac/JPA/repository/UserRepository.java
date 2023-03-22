@@ -7,6 +7,6 @@ import sesac.JPA.domain.BoardEntity;
 import java.util.Optional;
 
 @Repository
-public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
-    Optional<BoardEntity> findByTitle(String title);
+public interface UserRepository extends JpaRepository<BoardEntity, Integer> {
+
 }

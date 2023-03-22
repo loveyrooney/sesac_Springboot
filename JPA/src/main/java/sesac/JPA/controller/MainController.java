@@ -52,12 +52,12 @@ public class MainController {
         //model.addAttribute("list",boardList);
         return "signup";
     }
-    @PostMapping("/write")
-    @ResponseBody
-    public String boardCreate(@RequestBody BoardEntity boardEntity){
-        System.out.println("c"+boardEntity.getName());
-        mainService.createBoard(boardEntity);
-        return "ok";
-    }
+//    @PostMapping("/write")
+//    @ResponseBody
+//    public String boardCreate(@RequestBody BoardEntity boardEntity){
+//        System.out.println("c"+boardEntity.getName());
+//        mainService.createBoard(boardEntity);
+//        return "ok";
+//    }
 
 }

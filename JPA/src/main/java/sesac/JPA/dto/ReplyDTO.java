@@ -1,20 +1,15 @@
 package sesac.JPA.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Getter
-@Setter
-public class BoardDTO {
-
+public class ReplyDTO {
     @Id
     @GeneratedValue
-    private int boardId;
+    private int replyId;
     private String userId;
-    private String title;
+    private String boardId;
     private String content;
     private String date;
+
 }

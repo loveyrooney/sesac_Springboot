@@ -20,18 +20,14 @@ public class MainService {
 
         for (int i = 0; i < result.size(); i++) {
             BoardDTO b = new BoardDTO();
-            b.setId(result.get(i).getId());
-            b.setName(result.get(i).getName());
-            b.setPw(result.get(i).getPw());
-            b.setContent(result.get(i).getContent());
+            b.setUserId(result.get(i).getUserEntity().getId());
+            b.setTitle(result.get(i).getTitle());
+            b.setDate(result.get(i).getDate());
 
             boards.add(b);
         }
         return boards;
     }
 
-    public void createBoard(BoardEntity boardEntity) {
-        System.out.println("b :" +boardEntity.getName()+boardEntity.getId()+boardEntity.getContent());
-        boardRepository.save(boardEntity);
-    }
+
 }
