@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원정보 관리</title>
+</head>
+<body>
+<header style="display:flex">
+  <h1 style="margin-right: 20px;"><a href="/">Board</a></h1>
+  <h1 style="margin-right: 20px;"><a href="/loginHome">login</a></h1>
+</header>
+<div>
+  <h3>여기 th 처리</h3>
+  <form id="modify">
+    <input type="text" name="id" disabled/><br>
+    <input type="text" name="pw" disabled/><br>
+    <input type="text" name="newPw" placeholder="new password" required/><br>
+    <input type="text" name="newPwCheck" placeholder="new password check" required/><br>
+    <button type="button" onclick="modify()">회원정보수정</button>
+  </form>
+  <form id="bye">
+    <input type="text" name="id" disabled/><br>
+    <input type="text" name="pw" placeholder="pw" required/><br>
+    <input type="text" name="pwCheck" placeholder="password check" required/><br>
+    <button type="button" onclick="bye()">회원탈퇴</button>
+  </form>
+</div>
+<script>
+  function modify(){
+        let form = document.querySelector('#modify');
+        if(form.pw.value != form.pwCheck.value) alert("비밀번호를 정확히 입력해 주세요!");
+        axios.post(`/updateUser`, {id: form.id.value, pw:form.pw.value})
+        .then((res)=>{
+            alert(res.data);
+            window.location.href = "/";
+        });
+    }
+
+  function bye(){
+        let form = document.querySelector('#bye');
+        if(form.pw.value != form.pwCheck.value) alert("비밀번호를 정확히 입력해 주세요!");
+        axios.post(`/deleteUser`, {id: form.id.value, pw:form.pw.value})
+        .then((res)=>{
+            alert(res.data);
+            window.location.href = "/";
+        });
+    }
+</script>
+</body>
+</html>

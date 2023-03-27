@@ -3,7 +3,7 @@ package sesac.JPA.domain;
 import javax.persistence.*;
 
 @Entity
-@Table(name="Reply")
+@Table(name="ReplyDB")
 public class ReplyEntity {
 
     @Id
