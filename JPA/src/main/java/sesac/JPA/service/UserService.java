@@ -15,6 +15,24 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public UserDTO checkUser(UserDTO userDTO) {
+        Optional<UserEntity> getuser = userRepository.findById(userDTO.getId());
+        if(getuser.isPresent()) {
+            UserDTO getuserDTO = new UserDTO();
+            getuserDTO.setId(getuser.get().getId());
+            getuserDTO.setPw(getuser.get().getPw());
+            return getuserDTO;
+        } else {
+            UserDTO nulluser = new UserDTO();
+            return nulluser;
+        }
+    }
+
+    public String getUserPw(String id) {
+        Optional<UserEntity> getuser = userRepository.findById(id);
+        return getuser.get().getPw();
+    }
+
     public void addUser(UserDTO userDTO){
         //System.out.println(userDTO.getId()+userDTO.getPw());
         UserEntity user = new UserEntity();
@@ -24,7 +42,9 @@ public class UserService {
     }
 
     public void updateUser(UserDTO userDTO){
-        //save를 사용하려면 id가 int여야 하는데 나는 지금 string으로 쓰고있음. delete도 같은 상황..
+        Optional<UserEntity> getuser = userRepository.findById(userDTO.getId());
+        getuser.get().setPw(userDTO.getPw());
+        userRepository.save(getuser.get());
     }
 
     @Transactional
