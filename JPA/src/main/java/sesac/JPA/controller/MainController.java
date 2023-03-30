@@ -50,7 +50,7 @@ public class MainController {
 
     @PostMapping("/login")
     @ResponseBody
-    public String login(@RequestBody UserDTO userDTO, HttpServletRequest request) {
+    public Boolean login(@RequestBody UserDTO userDTO, HttpServletRequest request) {
         UserDTO getuserDTO = userService.checkUser(userDTO);
         if(getuserDTO.getPw() != null) {
             if(getuserDTO.getPw().equals(userDTO.getPw())) {
@@ -58,11 +58,22 @@ public class MainController {
                 session.setAttribute("sessionId", getuserDTO.getId());
 //            String sessionid = (String)session.getAttribute("sessionId");
 //            System.out.println("gethere"+ sessionid);
-                return "ok";
+                return true;
             }
-            else return "fail";
+            else return false;
         }
-        else return "fail";
+        else return false;
+    }
+
+    @PostMapping("/logout")
+    @ResponseBody
+    public Boolean logout(@RequestBody UserDTO userDTO, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String sessionId = (String)session.getAttribute("sessionId");
+        if(sessionId.equals(userDTO.getId())) {
+            session.invalidate();
+            return true;
+        } else return false;
     }
 
     @GetMapping("/signupHome")
@@ -72,10 +83,9 @@ public class MainController {
         return "signup";
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/createUser")
     @ResponseBody
     public String signup(@RequestBody UserDTO userDTO){
-        //System.out.println(userDTO.getId()+userDTO.getPw());
         userService.addUser(userDTO);
         return "회원 가입이 성공하였습니다.";
     }
@@ -84,9 +94,9 @@ public class MainController {
     public String users(Model model, HttpServletRequest req) {
         HttpSession session = req.getSession();
         String sessionId = (String)session.getAttribute("sessionId");
-        String userPw = userService.getUserPw(sessionId);
+        UserDTO getuser = userService.getUser(sessionId);
         model.addAttribute("userid",sessionId);
-        model.addAttribute("userpw", userPw);
+        model.addAttribute("userpw",getuser.getPw());
         return "users";
     }
 
@@ -107,25 +117,38 @@ public class MainController {
         return "회원 탈퇴 되었습니다.";
     }
 
-    @GetMapping("/content")
-    public String content(Model model) {
-        //ArrayList<BoardDTO> boardList = (ArrayList<BoardDTO>) mainService.getBoardList();
-        //model.addAttribute("list",boardList);
+    @GetMapping("/write")
+    public String write(Model model, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        String sessionId = (String)session.getAttribute("sessionId");
+        if(sessionId != null) model.addAttribute("userid",sessionId);
+        return "boardWrite";
+    }
+    @PostMapping("/createBoard")
+    public String boardCreate(BoardDTO boardDTO){
+        System.out.println(boardDTO.getBoardId()+boardDTO.getUserId()+boardDTO.getBoardTitle()+boardDTO.getBoardContent()+boardDTO.getBoardDate());
+        boardService.createBoard(boardDTO);
+        return "Main";
+    }
+
+    @GetMapping("/content/{id}")
+    public String content(@PathVariable String id, Model model, HttpServletRequest req) {
+        BoardDTO targetBoard = boardService.getBoardInfo(id);
+        HttpSession session = req.getSession();
+        String sessionId = (String)session.getAttribute("sessionId");
+        if(sessionId != null) model.addAttribute("userid",sessionId);
+        else model.addAttribute("userid","noname");
+        model.addAttribute("board",targetBoard);
         return "boardContent";
     }
 
-    @GetMapping("/write")
-    public String write(Model model) {
-        //ArrayList<BoardDTO> boardList = (ArrayList<BoardDTO>) mainService.getBoardList();
-        //model.addAttribute("list",boardList);
-        return "boardWrite";
-    }
-//    @PostMapping("/write")
-//    @ResponseBody
-//    public String boardCreate(@RequestBody BoardEntity boardEntity){
-//        System.out.println("c"+boardEntity.getName());
-//        mainService.createBoard(boardEntity);
-//        return "ok";
-//    }
+
+
+
+
+
+
+
+
 
 }

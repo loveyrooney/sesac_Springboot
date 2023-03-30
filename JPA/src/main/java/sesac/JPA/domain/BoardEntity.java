@@ -19,12 +19,12 @@ public class BoardEntity {
     private UserEntity userEntity;
 
     @Column(length = 30, nullable = false)
-    private String title;
+    private String boardTitle;
 
     @Lob
-    private String content;
+    private String boardContent;
 
     @Column(length = 20, nullable = false)
-    private String date;
+    private String boardDate;
 
 }

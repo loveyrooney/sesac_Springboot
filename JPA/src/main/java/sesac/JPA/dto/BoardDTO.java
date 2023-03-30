@@ -14,7 +14,7 @@ public class BoardDTO {
     @GeneratedValue
     private int boardId;
     private String userId;
-    private String title;
-    private String content;
-    private String date;
+    private String boardTitle;
+    private String boardContent;
+    private String boardDate;
 }

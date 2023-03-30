@@ -7,18 +7,31 @@
 <body>
 <header style="display:flex">
   <h1 style="margin-right: 20px;"><a href="/">Board</a></h1>
-  <h1 style="margin-right: 20px;"><a href="/loginHome">login</a></h1>
 </header>
-<form method="post" action="/boardWrite">
+<form method="post" action="/createBoard" id="boardForm">
   <div style="display:flex">
-    <p style="margin-right: 20px;"><input type="text" placeholder="title"></p>
-    <p style="margin-right: 20px;">th: getname() writer</p>
-    <p style="margin-right: 20px;">new date</p>
+    <input style="margin-right: 20px;" type="text" name="boardTitle" placeholder="title"/>
+    <input style="margin-right: 20px;" name="userId" th:value="${userid}"/>
+    <input style="margin-right: 20px;" name="boardDate"/>
   </div>
   <hr>
-  <textarea></textarea>
+  <textarea name="boardContent" form="boardForm" cols="50" rows="10"></textarea>
   <br>
-  <button type="submit">등록</button>
+  <button type="button" onclick="writeBoard()">등록</button>
 </form>
+<script>
+  const date = document.querySelector('input[name=boardDate]');
+  let newDate = new Date;
+  let today = `${newDate.getFullYear()}.${newDate.getMonth()}.${newDate.getDate()}`;
+  date.value = today;
+
+  function writeBoard() {
+    let form = document.querySelector('#boardForm');
+    console.log(form.boardTitle.value, form.userId.value, form.boardDate.value, form.boardContent.value);
+    if(!form.boardTitle.value || !form.boardContent.value) alert('내용을 모두 입력해 주세요!');
+    form.submit();
+  }
+
+</script>
 </body>
 </html>

@@ -14,12 +14,12 @@
 <button>삭제</button>
 <div>
   <div style="display:flex">
-    <p style="margin-right: 20px;">title</p>
-    <p style="margin-right: 20px;">writer</p>
-    <p style="margin-right: 20px;">date</p>
+    <p style="margin-right: 20px;" th:text="${board.getBoardTitle()}">title</p>
+    <p style="margin-right: 20px;" th:text="${board.getUserId()}">writer</p>
+    <p style="margin-right: 20px;" th:text="${board.getBoardDate()}">date</p>
   </div>
   <hr>
-  <div>hello blabla</div>
+  <div th:text="${board.getBoardContent()}">hello blabla</div>
   <hr>
   <div>
     <div style="display:flex">
@@ -27,9 +27,30 @@
       <p style="margin-right: 20px;">댓글내용</p>
       <a style="margin-right: 20px;">❌</a>
     </div>
-    <textarea></textarea>
-    <button>등록</button>
   </div>
+  <form id="replyForm" th:classappend="${board.getBoardId()}">
+    <input name="userId" th:value="${userid}"/>
+    <textarea name="replyContent" form="replyForm"></textarea>
+    <input name="replyDate"/>
+    <button onclick="reply()">등록</button>
+  </form>
 </div>
+<script>
+  const date = document.querySelector('input[name=replyDate]');
+  let newDate = new Date;
+  let today = `${newDate.getFullYear()}.${newDate.getMonth()}.${newDate.getDate()}`;
+  date.value = today;
+
+  function reply(){
+    let form = document.querySelector('#replyForm');
+    console.log(form.class);
+<!--        axios.post(`/createReply`, {userId: form.userId.value, boardId: form.class, replyContent: form.replyContent.value, replyDate: form.replyDate.value })-->
+<!--        .then((res)=>{-->
+<!--            console.log(res.data);-->
+<!--            if(!res.data) alert("댓글 등록에 실패했습니다");-->
+<!--            else window.location.reload();-->
+<!--        })-->
+    }
+</script>
 </body>
 </html>

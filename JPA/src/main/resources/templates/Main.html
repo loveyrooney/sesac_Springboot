@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Main</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
       .d-none {display: none;}
     </style>
@@ -10,23 +11,23 @@
 <body>
 <header style="display:flex">
   <h1 style="margin-right: 20px;"><a href="/">Board</a></h1>
-  <h1 style="margin-right: 20px;"><a href="/loginHome" th:text="${userid} ? 'hello,'+${userid}:'login'">login</a></h1>
+  <h1 style="margin-right: 20px;"><a href="/loginHome" th:text="${userid} != null ? 'hello,'+${userid}:'login'">login</a></h1>
   <button th:classappend="${isLogin} == true ? '':'d-none'" type="button" onclick="logout()">Logout</button>
 </header>
-<button><a href="/write">글 등록</a></button>
-<div>
-  <div style="display:flex">
-    <p style="margin-right: 20px;">작성자</p>
-    <p style="margin-right: 20px;">제목</p>
-    <p style="margin-right: 20px;">일시</p>
-  </div>
-  <div style="display:flex" th:each="board:${list}" th:classappend="${board.getBoardId()}">
-    <p style="margin-right: 20px;" th:text="${board.getUserId()}">작성자</p>
-    <p style="margin-right: 20px;"><a th:href="@{/content}" th:text="${board.getTitle()}"></a></p>
-    <p style="margin-right: 20px;" th:text="${board.getDate()}">일시</p>
-  </div>
-</div>
-<form>
+<button><a th:href="${isLogin} ==true ? @{/write} : @{#}" >글 등록</a></button>
+<table>
+  <th>
+    <td>작성자</td>
+    <td>제목</td>
+    <td>일시</td>
+  </th>
+  <tr th:each="board:${list}">
+    <td th:text="${board.getUserId()}"></td>
+    <td><a th:href="'/content/'+${board.getBoardId()}" th:text="${board.getBoardTitle()}"></a></td>
+    <td th:text="${board.getBoardDate()}"></td>
+  </tr>
+</table>
+<form id="search">
   <select>
     <option value="title_content">제목+내용</option>
     <option value="writer">작성자</option>
@@ -34,15 +35,17 @@
   <input type="text"/>
   <button type="button">검색</button>
 </form>
-<script>
+<script th:inline="javascript">
+  /*<![CDATA[*/
   function logout(){
-        axios.post(`/logout`, {id: form.id.value})
+        axios.post(`/logout`, {id: /*[[${userid}]]*/})
         .then((res)=>{
             console.log(res.data);
-            if(res.data == "ok") window.location.href = "/";
-            else alert("로그인에 실패했습니다");
+            if(!res.data) alert("로그아웃에 실패했습니다");
+            else window.location.href = "/";
         })
     }
+  /*]]>*/
 </script>
 </body>
 </html>

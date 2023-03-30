@@ -28,9 +28,17 @@ public class UserService {
         }
     }
 
-    public String getUserPw(String id) {
+    public UserDTO getUser(String id) {
         Optional<UserEntity> getuser = userRepository.findById(id);
-        return getuser.get().getPw();
+        if(getuser != null) {
+            UserDTO user = new UserDTO();
+            user.setId(getuser.get().getId());
+            user.setPw(getuser.get().getPw());
+            return user;
+        } else {
+            UserDTO nulluser = new UserDTO();
+            return nulluser;
+        }
     }
 
     public void addUser(UserDTO userDTO){
