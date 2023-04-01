@@ -48,9 +48,15 @@ public class ReplyService {
     }
 
     public Long getCount() {
-        Long count = boardRepository.countBy();
+        Long count = replyRepository.countBy();
         return count;
     }
+//    public Long getBoardReplyCount() {
+//        List<BoardEntity> boradList = boardRepository.findAll();
+//        //보드 리스트에 댓글리스트를 병렬시킬 것인가 컬럼을 만들 것인가
+//        //Long count = replyRepository.countByBoardEntity(boradList);
+//        return count;
+//    }
     public void createReply(ReplyDTO replyDTO){
         UserDTO getuser = userService.getUser(replyDTO.getUserId());
         UserEntity writer = new UserEntity();

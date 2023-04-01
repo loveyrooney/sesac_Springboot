@@ -150,7 +150,7 @@ public class MainController {
     public String boardCreate(BoardDTO boardDTO){
         System.out.println(boardDTO.getBoardId()+" \n" + boardDTO.getUserId()+" \n" + boardDTO.getBoardTitle()+" \n" + boardDTO.getBoardContent()+" \n" + boardDTO.getBoardDate());
         boardService.createBoard(boardDTO);
-        return "Main";
+        return "redirect:/";
     }
 
     @GetMapping("/modify/{id}")
@@ -169,32 +169,33 @@ public class MainController {
     @PatchMapping("/updateBoard")
     @ResponseBody
     public String boardUpdate(@RequestBody BoardDTO boardDTO){
+        System.out.println(boardDTO.getBoardId()+" \n" + boardDTO.getUserId()+" \n" + boardDTO.getBoardTitle()+" \n" + boardDTO.getBoardContent()+" \n" + boardDTO.getBoardDate());
         boardService.updateBoard(boardDTO);
         return "글이 수정되었습니다.";
     }
 
-    @DeleteMapping("/deleteBoard")
+    @PostMapping("/deleteBoard")
     @ResponseBody
-    public String boardDelete(@RequestBody int id){
-        boardService.deleteBoard(id);
+    public String boardDelete(@RequestBody BoardDTO boardDTO){
+        System.out.println("delete"+boardDTO.getBoardId()+" \n" + boardDTO.getUserId()+" \n" + boardDTO.getBoardTitle()+" \n" + boardDTO.getBoardContent()+" \n" + boardDTO.getBoardDate());
+        boardService.deleteBoard(boardDTO.getBoardId());
         return "글이 삭제되었습니다.";
     }
 
     @PostMapping("/createReply")
     @ResponseBody
     public String replyCreate(@RequestBody ReplyDTO replyDTO){
+        System.out.println(replyDTO);
         Long count = replyService.getCount();
         replyDTO.setReplyId(Long.valueOf(count).intValue()+1);
         replyService.createReply(replyDTO);
         return "댓글이 등록되었습니다.";
     }
 
-    @DeleteMapping("/deleteReply")
+    @PostMapping("/deleteReply")
     @ResponseBody
-    public String replyDelete(@RequestBody int id){
-        replyService.deleteReply(id);
+    public String replyDelete(@RequestBody ReplyDTO replyDTO){
+        replyService.deleteReply(replyDTO.getReplyId());
         return "댓글이 삭제되었습니다.";
     }
-
-
 }

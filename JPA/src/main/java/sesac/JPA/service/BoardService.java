@@ -59,7 +59,7 @@ public class BoardService {
         targetBoard.setBoardTitle(target.get().getBoardTitle());
         targetBoard.setBoardContent(target.get().getBoardContent());
         targetBoard.setBoardDate(target.get().getBoardDate());
-
+        System.out.println("service"+target.get().getBoardId()+target.get().getUserEntity().getId());
         return targetBoard;
     }
 

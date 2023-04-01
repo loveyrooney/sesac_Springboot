@@ -11,7 +11,8 @@
 <body>
 <header style="display:flex">
   <h1 style="margin-right: 20px;"><a href="/">Board</a></h1>
-  <h1 style="margin-right: 20px;"><a href="/loginHome">login</a></h1>
+  <h1 style="margin-right: 20px;"><a href="/loginHome" th:text="${userid} != 'noname' ? 'hello,'+${userid}:'login'">login</a></h1>
+  <button th:classappend="${userid} == 'noname' ? 'd-none':''" type="button" onclick="logout()">Logout</button>
 </header>
 <button><a href="/">목록으로</a></button>
 <button th:classappend="${userid} != 'noname' ? '':'d-none'"><a th:href="'/modify/'+${board.getBoardId()}">수정/삭제</a></button>
@@ -36,13 +37,14 @@
       <td th:text="${reply.getUserId()}"></td>
       <td th:text="${reply.getReplyContent()}"></td>
       <td th:text="${reply.getReplyDate()}"></td>
+      <td th:classappend="${userid} == ${reply.getUserId()} ? ${reply.getReplyId()} : 'd-none'" type="button" onclick="deleteReply(this)">❌</td>
     </tr>
   </table>
   <form id="replyForm" th:classappend="${board.getBoardId()}">
-    <input name="userId" th:value="${userid}" disabled/>
+    <input name="userId" th:value="${userid}" readonly/>
     <textarea name="replyContent" form="replyForm"></textarea>
-    <input type="text" name="replyDate" disabled/>
-    <button onclick="createReply()">등록</button>
+    <input type="text" name="replyDate" readonly/>
+    <button type="button" onclick="createReply()">등록</button>
   </form>
 </div>
 <script>
@@ -54,13 +56,25 @@
   function createReply(){
     let form = document.querySelector('#replyForm');
     console.log(form.className);
+    if(form.userId.value == 'noname') alert('로그인 후 이용할 수 있습니다.');
     axios.post(`/createReply`, {userId: form.userId.value, boardId: parseInt(form.className), replyContent: form.replyContent.value, replyDate: form.replyDate.value })
-        .then((res)=>{
-            console.log(res.data);
-            //if(!res.data) alert("댓글 등록에 실패했습니다");
-            //else window.location.reload();
-        })
-    }
+    .then((res)=>{
+        console.log(res.data);
+        if(!res.data) alert("댓글 등록에 실패했습니다");
+        else window.location.reload();
+    })
+  }
+
+  function deleteReply(e){
+    let form = document.querySelector('#replyForm');
+    console.log(form.className, e.className);
+    axios.post(`/deleteReply`, {replyId: parseInt(e.className)})
+    .then((res)=>{
+        console.log(res.data);
+        if(!res.data) alert("댓글 삭제에 실패했습니다");
+        else window.location.reload();
+    })
+  }
 </script>
 </body>
 </html>

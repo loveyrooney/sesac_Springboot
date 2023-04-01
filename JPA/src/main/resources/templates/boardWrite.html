@@ -24,7 +24,6 @@
   <hr>
   <textarea name="boardContent" form="boardForm" th:text="${board} ? ${board.getBoardContent()}" cols="50" rows="10"></textarea>
   <br>
-    <button>asdf</button>
   <button th:classappend="!${board} ? '':'d-none'" type="button" onclick="writeBoard()">등록</button>
   <button th:classappend="!${board} ? 'd-none':''" type="button" onclick="updateBoard()">수정</button>
   <button th:classappend="!${board} ? 'd-none':''" type="button" onclick="deleteBoard()">삭제</button>
@@ -44,13 +43,13 @@
       let form = document.querySelector('#boardForm');
       console.log(form.boardId.value, typeof(form.boardDate.value));
       if(!form.boardTitle.value || !form.boardContent.value) alert('내용을 모두 입력해 주세요!');
-      console.log( form.userId.value);
-      //form.submit();
+      //console.log( form.userId.value);
+      form.submit();
     }
 
     function updateBoard() {
       let form = document.querySelector('#boardForm');
-      let data = {boardId: form.className, userid: form.userId.value, boardTitle: form.boardTitle.value, boardContent: form.boardContent.value, boardDate: form.boardDate.value};
+      let data = {boardId: form.boardId.value, userId: form.userId.value, boardTitle: form.boardTitle.value, boardContent: form.boardContent.value, boardDate: form.boardDate.value};
       if(!form.boardTitle.value || !form.boardContent.value) alert('내용을 모두 입력해 주세요!');
       axios.patch(`/updateBoard`, data)
       .then((res)=>{
@@ -61,8 +60,10 @@
 
     function deleteBoard() {
       let form = document.querySelector('#boardForm');
+      let data = {boardId: form.boardId.value, userId: form.userId.value, boardTitle: form.boardTitle.value, boardContent: form.boardContent.value, boardDate: form.boardDate.value};
+      console.log(data);
       if(!form.boardTitle.value || !form.boardContent.value) alert('내용을 모두 입력해 주세요!');
-      axios.delete(`/deleteBoard`,{boardId: form.className})
+      axios.post(`/deleteBoard`,data)
       .then((res)=>{
         alert(res.data);
         window.location.href = "/";

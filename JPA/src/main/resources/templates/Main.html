@@ -17,13 +17,15 @@
 <button><a th:href="@{/write}" >글 등록</a></button>
 <table>
   <th>
-    <td>작성자</td>
+    <td>번호</td>
     <td>제목</td>
+    <td>작성자</td>
     <td>일시</td>
   </th>
   <tr th:each="board:${list}">
-    <td th:text="${board.getUserId()}"></td>
+    <td th:text="${board.getBoardId()}"></td>
     <td><a th:href="'/content/'+${board.getBoardId()}" th:text="${board.getBoardTitle()}"></a></td>
+    <td th:text="${board.getUserId()}"></td>
     <td th:text="${board.getBoardDate()}"></td>
   </tr>
 </table>
