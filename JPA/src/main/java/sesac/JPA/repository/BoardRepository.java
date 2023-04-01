@@ -8,5 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
+
+    Long countBy();
     Optional<BoardEntity> findByBoardTitle(String title);
+
 }

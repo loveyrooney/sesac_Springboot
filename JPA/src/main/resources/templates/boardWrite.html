@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Board Write</title>
+    <style>
+      .d-none {display:none;}
+    </style>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <header style="display:flex">
@@ -10,28 +14,61 @@
 </header>
 <form method="post" action="/createBoard" id="boardForm">
   <div style="display:flex">
-    <input style="margin-right: 20px;" type="text" name="boardTitle" placeholder="title"/>
-    <input style="margin-right: 20px;" name="userId" th:value="${userid}"/>
-    <input style="margin-right: 20px;" name="boardDate"/>
+    <input class="d-none" name="boardId" th:value="${board} ? ${board.getBoardId()} : ${boardid}" />
+    <input style="margin-right: 20px;" type="text" name="boardTitle" th:value="${board} ? ${board.getBoardTitle()}" placeholder="title"/>
+    <input style="margin-right: 20px;" name="userId" th:value="${userid} ? ${userid}"readonly/>
+    <input style="margin-right: 20px;" name="boardDate"readonly/>
+
+      
   </div>
   <hr>
-  <textarea name="boardContent" form="boardForm" cols="50" rows="10"></textarea>
+  <textarea name="boardContent" form="boardForm" th:text="${board} ? ${board.getBoardContent()}" cols="50" rows="10"></textarea>
   <br>
-  <button type="button" onclick="writeBoard()">등록</button>
+    <button>asdf</button>
+  <button th:classappend="!${board} ? '':'d-none'" type="button" onclick="writeBoard()">등록</button>
+  <button th:classappend="!${board} ? 'd-none':''" type="button" onclick="updateBoard()">수정</button>
+  <button th:classappend="!${board} ? 'd-none':''" type="button" onclick="deleteBoard()">삭제</button>
 </form>
-<script>
-  const date = document.querySelector('input[name=boardDate]');
-  let newDate = new Date;
-  let today = `${newDate.getFullYear()}.${newDate.getMonth()}.${newDate.getDate()}`;
-  date.value = today;
+<script th:inline="javascript">
+  /*<![CDATA[*/
+    if(!/*[[${userid}]]*/) {
+      alert('잘못된 접근입니다');
+      window.location.href = "/";
+   }
+    const date = document.querySelector('input[name=boardDate]');
+    let newDate = new Date;
+    let today = `${newDate.getFullYear()}.${newDate.getMonth()+1}.${newDate.getDate()}`;
+    date.value = today;
 
-  function writeBoard() {
-    let form = document.querySelector('#boardForm');
-    console.log(form.boardTitle.value, form.userId.value, form.boardDate.value, form.boardContent.value);
-    if(!form.boardTitle.value || !form.boardContent.value) alert('내용을 모두 입력해 주세요!');
-    form.submit();
-  }
+    function writeBoard() {
+      let form = document.querySelector('#boardForm');
+      console.log(form.boardId.value, typeof(form.boardDate.value));
+      if(!form.boardTitle.value || !form.boardContent.value) alert('내용을 모두 입력해 주세요!');
+      console.log( form.userId.value);
+      //form.submit();
+    }
 
+    function updateBoard() {
+      let form = document.querySelector('#boardForm');
+      let data = {boardId: form.className, userid: form.userId.value, boardTitle: form.boardTitle.value, boardContent: form.boardContent.value, boardDate: form.boardDate.value};
+      if(!form.boardTitle.value || !form.boardContent.value) alert('내용을 모두 입력해 주세요!');
+      axios.patch(`/updateBoard`, data)
+      .then((res)=>{
+        alert(res.data);
+        window.location.href = "/";
+      })
+    }
+
+    function deleteBoard() {
+      let form = document.querySelector('#boardForm');
+      if(!form.boardTitle.value || !form.boardContent.value) alert('내용을 모두 입력해 주세요!');
+      axios.delete(`/deleteBoard`,{boardId: form.className})
+      .then((res)=>{
+        alert(res.data);
+        window.location.href = "/";
+      })
+    }
+  /*]]>*/
 </script>
 </body>
 </html>

@@ -14,7 +14,7 @@
   <h1 style="margin-right: 20px;"><a href="/loginHome" th:text="${userid} != null ? 'hello,'+${userid}:'login'">login</a></h1>
   <button th:classappend="${isLogin} == true ? '':'d-none'" type="button" onclick="logout()">Logout</button>
 </header>
-<button><a th:href="${isLogin} ==true ? @{/write} : @{#}" >글 등록</a></button>
+<button><a th:href="@{/write}" >글 등록</a></button>
 <table>
   <th>
     <td>작성자</td>

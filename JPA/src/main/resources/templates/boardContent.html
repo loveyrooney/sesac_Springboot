@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Board Content</title>
+    <style>
+      .d-none {display:none;}
+    </style>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <header style="display:flex">
@@ -10,8 +14,7 @@
   <h1 style="margin-right: 20px;"><a href="/loginHome">login</a></h1>
 </header>
 <button><a href="/">목록으로</a></button>
-<button>수정</button>
-<button>삭제</button>
+<button th:classappend="${userid} != 'noname' ? '':'d-none'"><a th:href="'/modify/'+${board.getBoardId()}">수정/삭제</a></button>
 <div>
   <div style="display:flex">
     <p style="margin-right: 20px;" th:text="${board.getBoardTitle()}">title</p>
@@ -28,28 +31,35 @@
       <a style="margin-right: 20px;">❌</a>
     </div>
   </div>
+  <table>
+    <tr th:each="reply:${list}">
+      <td th:text="${reply.getUserId()}"></td>
+      <td th:text="${reply.getReplyContent()}"></td>
+      <td th:text="${reply.getReplyDate()}"></td>
+    </tr>
+  </table>
   <form id="replyForm" th:classappend="${board.getBoardId()}">
-    <input name="userId" th:value="${userid}"/>
+    <input name="userId" th:value="${userid}" disabled/>
     <textarea name="replyContent" form="replyForm"></textarea>
-    <input name="replyDate"/>
-    <button onclick="reply()">등록</button>
+    <input type="text" name="replyDate" disabled/>
+    <button onclick="createReply()">등록</button>
   </form>
 </div>
 <script>
   const date = document.querySelector('input[name=replyDate]');
   let newDate = new Date;
-  let today = `${newDate.getFullYear()}.${newDate.getMonth()}.${newDate.getDate()}`;
+  let today = `${newDate.getFullYear()}.${newDate.getMonth()+1}.${newDate.getDate()}`;
   date.value = today;
 
-  function reply(){
+  function createReply(){
     let form = document.querySelector('#replyForm');
-    console.log(form.class);
-<!--        axios.post(`/createReply`, {userId: form.userId.value, boardId: form.class, replyContent: form.replyContent.value, replyDate: form.replyDate.value })-->
-<!--        .then((res)=>{-->
-<!--            console.log(res.data);-->
-<!--            if(!res.data) alert("댓글 등록에 실패했습니다");-->
-<!--            else window.location.reload();-->
-<!--        })-->
+    console.log(form.className);
+    axios.post(`/createReply`, {userId: form.userId.value, boardId: parseInt(form.className), replyContent: form.replyContent.value, replyDate: form.replyDate.value })
+        .then((res)=>{
+            console.log(res.data);
+            //if(!res.data) alert("댓글 등록에 실패했습니다");
+            //else window.location.reload();
+        })
     }
 </script>
 </body>

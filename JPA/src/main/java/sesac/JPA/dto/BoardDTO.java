@@ -10,8 +10,6 @@ import javax.persistence.Id;
 @Setter
 public class BoardDTO {
 
-    @Id
-    @GeneratedValue
     private int boardId;
     private String userId;
     private String boardTitle;

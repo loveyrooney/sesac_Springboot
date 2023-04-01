@@ -6,8 +6,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import sesac.JPA.domain.BoardEntity;
 import sesac.JPA.dto.BoardDTO;
+import sesac.JPA.dto.ReplyDTO;
 import sesac.JPA.dto.UserDTO;
 import sesac.JPA.service.BoardService;
+import sesac.JPA.service.ReplyService;
 import sesac.JPA.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,9 @@ public class MainController {
     BoardService boardService;
     @Autowired
     UserService userService;
+
+    @Autowired
+    ReplyService replyService;
 
 
     @GetMapping("/")
@@ -117,38 +122,79 @@ public class MainController {
         return "회원 탈퇴 되었습니다.";
     }
 
-    @GetMapping("/write")
-    public String write(Model model, HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        String sessionId = (String)session.getAttribute("sessionId");
-        if(sessionId != null) model.addAttribute("userid",sessionId);
-        return "boardWrite";
-    }
-    @PostMapping("/createBoard")
-    public String boardCreate(BoardDTO boardDTO){
-        System.out.println(boardDTO.getBoardId()+boardDTO.getUserId()+boardDTO.getBoardTitle()+boardDTO.getBoardContent()+boardDTO.getBoardDate());
-        boardService.createBoard(boardDTO);
-        return "Main";
-    }
-
     @GetMapping("/content/{id}")
-    public String content(@PathVariable String id, Model model, HttpServletRequest req) {
+    public String content(@PathVariable int id, Model model, HttpServletRequest req) {
         BoardDTO targetBoard = boardService.getBoardInfo(id);
+        ArrayList<ReplyDTO> replyList = (ArrayList<ReplyDTO>) replyService.getReplyList(id);
         HttpSession session = req.getSession();
         String sessionId = (String)session.getAttribute("sessionId");
         if(sessionId != null) model.addAttribute("userid",sessionId);
         else model.addAttribute("userid","noname");
         model.addAttribute("board",targetBoard);
+        model.addAttribute("list",replyList);
         return "boardContent";
     }
 
+    @GetMapping("/write")
+    public String write(Model model, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        String sessionId = (String)session.getAttribute("sessionId");
+        Long count = boardService.getCount();
+        if(sessionId != null) {
+            model.addAttribute("userid", sessionId);
+            model.addAttribute("boardid", Long.valueOf(count).intValue()+1);
+        }
+        return "boardWrite";
+    }
+    @PostMapping("/createBoard")
+    public String boardCreate(BoardDTO boardDTO){
+        System.out.println(boardDTO.getBoardId()+" \n" + boardDTO.getUserId()+" \n" + boardDTO.getBoardTitle()+" \n" + boardDTO.getBoardContent()+" \n" + boardDTO.getBoardDate());
+        boardService.createBoard(boardDTO);
+        return "Main";
+    }
 
+    @GetMapping("/modify/{id}")
+    public String boardUpdateHome(@PathVariable int id, Model model, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        String sessionId = (String)session.getAttribute("sessionId");
+        if(sessionId != null){
+            BoardDTO targetBoard = boardService.getBoardInfo(id);
+            model.addAttribute("userid",sessionId);
+            model.addAttribute("board",targetBoard);
+        }
+        else model.addAttribute("userid",false);
+        return "boardWrite";
+    }
 
+    @PatchMapping("/updateBoard")
+    @ResponseBody
+    public String boardUpdate(@RequestBody BoardDTO boardDTO){
+        boardService.updateBoard(boardDTO);
+        return "글이 수정되었습니다.";
+    }
 
+    @DeleteMapping("/deleteBoard")
+    @ResponseBody
+    public String boardDelete(@RequestBody int id){
+        boardService.deleteBoard(id);
+        return "글이 삭제되었습니다.";
+    }
 
+    @PostMapping("/createReply")
+    @ResponseBody
+    public String replyCreate(@RequestBody ReplyDTO replyDTO){
+        Long count = replyService.getCount();
+        replyDTO.setReplyId(Long.valueOf(count).intValue()+1);
+        replyService.createReply(replyDTO);
+        return "댓글이 등록되었습니다.";
+    }
 
-
-
+    @DeleteMapping("/deleteReply")
+    @ResponseBody
+    public String replyDelete(@RequestBody int id){
+        replyService.deleteReply(id);
+        return "댓글이 삭제되었습니다.";
+    }
 
 
 }

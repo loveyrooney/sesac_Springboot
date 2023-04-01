@@ -1,9 +1,14 @@
 package sesac.JPA.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name="ReplyDB")
+@Getter
+@Setter
 public class ReplyEntity {
 
     @Id
@@ -17,9 +22,9 @@ public class ReplyEntity {
     @JoinColumn(name="boardId")
     private BoardEntity boardEntity;
 
-    @Lob
-    private String content;
+    @Column(length = 1000, nullable = false)
+    private String replyContent;
 
     @Column(length = 20, nullable = false)
-    private String date;
+    private String replyDate;
 }

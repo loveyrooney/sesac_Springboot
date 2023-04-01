@@ -26,6 +26,7 @@ public class BoardService {
 
         for (int i = 0; i < result.size(); i++) {
             BoardDTO b = new BoardDTO();
+            b.setBoardId(result.get(i).getBoardId());
             b.setUserId(result.get(i).getUserEntity().getId());
             b.setBoardTitle(result.get(i).getBoardTitle());
             b.setBoardDate(result.get(i).getBoardDate());
@@ -50,8 +51,8 @@ public class BoardService {
         boardRepository.save(newBoard);
     }
 
-    public BoardDTO getBoardInfo(String id) {
-        Optional<BoardEntity> target = boardRepository.findById(Integer.parseInt(id));
+    public BoardDTO getBoardInfo(int id) {
+        Optional<BoardEntity> target = boardRepository.findById(id);
         BoardDTO targetBoard = new BoardDTO();
         targetBoard.setBoardId(target.get().getBoardId());
         targetBoard.setUserId(target.get().getUserEntity().getId());
@@ -60,6 +61,22 @@ public class BoardService {
         targetBoard.setBoardDate(target.get().getBoardDate());
 
         return targetBoard;
+    }
+
+    public Long getCount() {
+        Long count = boardRepository.countBy();
+        return count;
+    }
+
+    public void updateBoard(BoardDTO boardDTO){
+        Optional<BoardEntity> target = boardRepository.findById(boardDTO.getBoardId());
+        target.get().setBoardTitle(boardDTO.getBoardTitle());
+        target.get().setBoardContent(boardDTO.getBoardContent());
+        boardRepository.save(target.get());
+    }
+
+    public void deleteBoard(int id){
+        boardRepository.deleteById(id);
     }
 
 
