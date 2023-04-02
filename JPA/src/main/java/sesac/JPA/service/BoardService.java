@@ -10,6 +10,7 @@ import sesac.JPA.repository.BoardRepository;
 import sesac.JPA.repository.ReplyRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +24,23 @@ public class BoardService {
     UserService userService;
 
     public List<BoardDTO> getBoardList(){
-        List<BoardEntity> result = boardRepository.findAll();
+        List<BoardEntity> all = boardRepository.findAll();
+        return getFinal(all);
+    }
+
+    public List<BoardDTO> getSearchList(String select, String search){
+        switch (select){
+            case "title" : List<BoardEntity> titles = boardRepository.findByBoardTitleContaining(search);
+                return getFinal(titles);
+            case "content" : List<BoardEntity> contents = boardRepository.findByBoardContentContaining(search);
+                return getFinal(contents);
+            case "writer" : List<BoardEntity> writers = boardRepository.findByUserEntity_IdContaining(search);
+                return getFinal(writers);
+            default: List<BoardDTO> empty = Collections.emptyList();
+                return empty;
+        }
+    }
+    public List<BoardDTO> getFinal(List<BoardEntity> result){
         List<BoardDTO> boards = new ArrayList<>();
 
         for (int i = 0; i < result.size(); i++) {

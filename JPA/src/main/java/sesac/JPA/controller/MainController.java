@@ -32,17 +32,22 @@ public class MainController {
     public String home(Model model, HttpServletRequest req) {
         HttpSession session = req.getSession();
         String sessionId = (String)session.getAttribute("sessionId");
-        System.out.println("session" + sessionId);
+        System.out.println("session " + sessionId);
         ArrayList<BoardDTO> boardList = (ArrayList<BoardDTO>) boardService.getBoardList();
-        //ArrayList<Long> replyList = replyService.getBoardReplyCount();
         model.addAttribute("list",boardList);
-        //model.addAttribute("replyList",replyList);
-        System.out.println(boardList.get(0).getBoardTitle());
+        //System.out.println(boardList.get(0).getBoardTitle());
         if(sessionId != null) {
             model.addAttribute("isLogin", true);
             model.addAttribute("userid",sessionId);
         } else model.addAttribute("isLogin", false);
         return "Main";
+    }
+
+    @GetMapping("/search")
+    public String searchContent(@RequestParam String select, @RequestParam String search, Model model){
+        ArrayList<BoardDTO> searchList = (ArrayList<BoardDTO>) boardService.getSearchList(select,search);
+        model.addAttribute("list",searchList);
+        return "search";
     }
 
     @GetMapping("/loginHome")
@@ -64,8 +69,6 @@ public class MainController {
             if(getuserDTO.getPw().equals(userDTO.getPw())) {
                 HttpSession session = request.getSession();
                 session.setAttribute("sessionId", getuserDTO.getId());
-//            String sessionid = (String)session.getAttribute("sessionId");
-//            System.out.println("gethere"+ sessionid);
                 return true;
             }
             else return false;
@@ -86,8 +89,6 @@ public class MainController {
 
     @GetMapping("/signupHome")
     public String signupHome(Model model) {
-        //ArrayList<BoardDTO> boardList = (ArrayList<BoardDTO>) mainService.getBoardList();
-        //model.addAttribute("list",boardList);
         return "signup";
     }
 
@@ -156,7 +157,7 @@ public class MainController {
         return "redirect:/";
     }
 
-    @GetMapping("/modify/{id}")
+    @GetMapping("/write/{id}")
     public String boardUpdateHome(@PathVariable int id, Model model, HttpServletRequest req) {
         HttpSession session = req.getSession();
         String sessionId = (String)session.getAttribute("sessionId");

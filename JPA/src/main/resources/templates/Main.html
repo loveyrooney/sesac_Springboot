@@ -29,13 +29,14 @@
       <td th:text="${board.getBoardDate()}"></td>
   </tr>
 </table>
-<form id="search">
-  <select>
-    <option value="title_content">제목+내용</option>
+<form id="search" method="get" action="/search">
+  <select name="select">
+    <option value="title">제목</option>
+      <option value="content">내용</option>
     <option value="writer">작성자</option>
   </select>
-  <input type="text"/>
-  <button type="button">검색</button>
+  <input type="text" name="search"/>
+  <button type="button" onclick="searchContent()">검색</button>
 </form>
 <script th:inline="javascript">
   /*<![CDATA[*/
@@ -46,7 +47,14 @@
             if(!res.data) alert("로그아웃에 실패했습니다");
             else window.location.href = "/";
         })
-    }
+  }
+
+  function searchContent(){
+    let form = document.querySelector('#search');
+    console.log(form.select.value);
+    if(!form.search.value) alert('검색어를 입력하세요.');
+    form.submit();
+  }
   /*]]>*/
 </script>
 </body>
