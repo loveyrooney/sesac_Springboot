@@ -7,6 +7,7 @@ import sesac.JPA.domain.UserEntity;
 import sesac.JPA.dto.BoardDTO;
 import sesac.JPA.dto.UserDTO;
 import sesac.JPA.repository.BoardRepository;
+import sesac.JPA.repository.ReplyRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,8 @@ import java.util.Optional;
 public class BoardService {
     @Autowired
     private BoardRepository boardRepository;
-
+    @Autowired
+    private ReplyRepository replyRepository;
     @Autowired
     UserService userService;
 
@@ -25,10 +27,11 @@ public class BoardService {
         List<BoardDTO> boards = new ArrayList<>();
 
         for (int i = 0; i < result.size(); i++) {
+            Long count = replyRepository.countByBoardEntity_BoardId(result.get(i).getBoardId());
             BoardDTO b = new BoardDTO();
             b.setBoardId(result.get(i).getBoardId());
             b.setUserId(result.get(i).getUserEntity().getId());
-            b.setBoardTitle(result.get(i).getBoardTitle());
+            b.setBoardTitle(result.get(i).getBoardTitle()+" ["+count+"]");
             b.setBoardDate(result.get(i).getBoardDate());
 
             boards.add(b);

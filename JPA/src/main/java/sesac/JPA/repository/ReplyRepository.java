@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface ReplyRepository extends JpaRepository<ReplyEntity, Integer> {
     Long countBy();
-    //Long countByBoardEntity(List<BoardEntity> boardEntityList);
-    List<ReplyEntity> findByBoardEntity(BoardEntity boardEntity);
+    Long countByBoardEntity_BoardId(int id);
+    List<ReplyEntity> findByBoardEntity_BoardId(int id);
 }

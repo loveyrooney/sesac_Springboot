@@ -34,7 +34,10 @@ public class MainController {
         String sessionId = (String)session.getAttribute("sessionId");
         System.out.println("session" + sessionId);
         ArrayList<BoardDTO> boardList = (ArrayList<BoardDTO>) boardService.getBoardList();
+        //ArrayList<Long> replyList = replyService.getBoardReplyCount();
         model.addAttribute("list",boardList);
+        //model.addAttribute("replyList",replyList);
+        System.out.println(boardList.get(0).getBoardTitle());
         if(sessionId != null) {
             model.addAttribute("isLogin", true);
             model.addAttribute("userid",sessionId);

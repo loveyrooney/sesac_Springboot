@@ -31,8 +31,7 @@ public class ReplyService {
     BoardService boardService;
 
     public List<ReplyDTO> getReplyList(int id){
-        Optional<BoardEntity> targetBoard = boardRepository.findById(id);
-        List<ReplyEntity> result = replyRepository.findByBoardEntity(targetBoard.get());
+        List<ReplyEntity> result = replyRepository.findByBoardEntity_BoardId(id);
             List<ReplyDTO> replies = new ArrayList<>();
 
             for (int i = 0; i < result.size(); i++) {
@@ -51,12 +50,16 @@ public class ReplyService {
         Long count = replyRepository.countBy();
         return count;
     }
-//    public Long getBoardReplyCount() {
-//        List<BoardEntity> boradList = boardRepository.findAll();
-//        //보드 리스트에 댓글리스트를 병렬시킬 것인가 컬럼을 만들 것인가
-//        //Long count = replyRepository.countByBoardEntity(boradList);
-//        return count;
-//    }
+    public ArrayList<Long> getBoardReplyCount() {
+        List<BoardEntity> boardList = boardRepository.findAll();
+        ArrayList<Long> countList = new ArrayList<>();
+        for (int i = 0; i < boardList.size(); i++) {
+            Long count = replyRepository.countByBoardEntity_BoardId(boardList.get(i).getBoardId());
+            countList.add(count);
+        }
+        //System.out.println(countList);
+        return countList;
+    }
     public void createReply(ReplyDTO replyDTO){
         UserDTO getuser = userService.getUser(replyDTO.getUserId());
         UserEntity writer = new UserEntity();
