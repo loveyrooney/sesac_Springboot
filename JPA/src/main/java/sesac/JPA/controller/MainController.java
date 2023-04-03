@@ -1,13 +1,12 @@
 package sesac.JPA.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import sesac.JPA.domain.BoardEntity;
-import sesac.JPA.dto.BoardDTO;
-import sesac.JPA.dto.ReplyDTO;
-import sesac.JPA.dto.UserDTO;
+import sesac.JPA.dto.*;
 import sesac.JPA.service.BoardService;
 import sesac.JPA.service.ReplyService;
 import sesac.JPA.service.UserService;
@@ -62,29 +61,29 @@ public class MainController {
     }
 
     @PostMapping("/login")
-    @ResponseBody
-    public Boolean login(@RequestBody UserDTO userDTO, HttpServletRequest request) {
-        UserDTO getuserDTO = userService.checkUser(userDTO);
-        if(getuserDTO.getPw() != null) {
-            if(getuserDTO.getPw().equals(userDTO.getPw())) {
-                HttpSession session = request.getSession();
-                session.setAttribute("sessionId", getuserDTO.getId());
-                return true;
-            }
-            else return false;
+    public ResponseEntity<Boolean> login(@RequestBody UserDTO userDTO, HttpServletRequest request) {
+        if(userDTO.getId().equals("") || userDTO.getPw().equals("")) return ResponseEntity.status(400).body(false);
+        else {
+            UserDTO getuserDTO = userService.checkUser(userDTO);
+            if (getuserDTO.getPw() != null) {
+                if (getuserDTO.getPw().equals(userDTO.getPw())) {
+                    HttpSession session = request.getSession();
+                    session.setAttribute("sessionId", getuserDTO.getId());
+                    return ResponseEntity.status(201).body(true);
+                } else return ResponseEntity.status(204).body(false);
+            } else return ResponseEntity.status(404).body(false);
         }
-        else return false;
     }
 
     @PostMapping("/logout")
     @ResponseBody
-    public Boolean logout(@RequestBody UserDTO userDTO, HttpServletRequest request) {
+    public ResponseEntity<Boolean> logout(@RequestBody UserDTO userDTO, HttpServletRequest request) {
         HttpSession session = request.getSession();
         String sessionId = (String)session.getAttribute("sessionId");
         if(sessionId.equals(userDTO.getId())) {
             session.invalidate();
-            return true;
-        } else return false;
+            return ResponseEntity.status(201).body(true);
+        } else return ResponseEntity.status(404).body(false);
     }
 
     @GetMapping("/signupHome")
@@ -94,9 +93,9 @@ public class MainController {
 
     @PostMapping("/createUser")
     @ResponseBody
-    public String signup(@RequestBody UserDTO userDTO){
+    public ResponseEntity<String> signup(@RequestBody UserDTO userDTO){
         userService.addUser(userDTO);
-        return "회원 가입이 성공하였습니다.";
+        return ResponseEntity.status(201).body("회원 가입이 성공하였습니다.");
     }
 
     @GetMapping("/users")
@@ -111,19 +110,22 @@ public class MainController {
 
     @PostMapping("/updateUser")
     @ResponseBody
-    public String updateUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<String> updateUser(@RequestBody UserDTO userDTO){
         //System.out.println(userDTO.getId()+userDTO.getPw());
         userService.updateUser(userDTO);
-        return "회원정보가 수정되었습니다.";
+        return ResponseEntity.status(204).body("회원정보가 수정되었습니다.");
     }
 
     @PostMapping("/deleteUser")
     @ResponseBody
-    public String deleteUser(@RequestBody UserDTO userDTO, HttpServletRequest req){
-        HttpSession session = req.getSession();
-        session.invalidate();
-        userService.deleteUser(userDTO);
-        return "회원 탈퇴 되었습니다.";
+    public ResponseEntity<String> deleteUser(@RequestBody UserDTO userDTO, HttpServletRequest req){
+        String userPw = userService.checkUser(userDTO).getPw();
+        if(userPw.equals(userDTO.getPw())) {
+            HttpSession session = req.getSession();
+            session.invalidate();
+            userService.deleteUser(userDTO);
+            return ResponseEntity.status(204).body("회원 탈퇴 되었습니다.");
+        } else return ResponseEntity.status(404).body("비밀번호가 틀렸습니다.");
     }
 
     @GetMapping("/content/{id}")
@@ -143,17 +145,13 @@ public class MainController {
     public String write(Model model, HttpServletRequest req) {
         HttpSession session = req.getSession();
         String sessionId = (String)session.getAttribute("sessionId");
-        Long count = boardService.getCount();
-        if(sessionId != null) {
-            model.addAttribute("userid", sessionId);
-            model.addAttribute("boardid", Long.valueOf(count).intValue()+1);
-        }
+        if(sessionId != null) model.addAttribute("userid", sessionId);
         return "boardWrite";
     }
     @PostMapping("/createBoard")
-    public String boardCreate(BoardDTO boardDTO){
-        System.out.println(boardDTO.getBoardId()+" \n" + boardDTO.getUserId()+" \n" + boardDTO.getBoardTitle()+" \n" + boardDTO.getBoardContent()+" \n" + boardDTO.getBoardDate());
-        boardService.createBoard(boardDTO);
+    public String boardCreate(CreateBoardDTO createBoardDTO){
+        System.out.println(createBoardDTO.getUserId()+" \n" + createBoardDTO.getBoardTitle()+" \n" + createBoardDTO.getBoardContent()+" \n" + createBoardDTO.getBoardDate());
+        boardService.createBoard(createBoardDTO);
         return "redirect:/";
     }
 
@@ -172,34 +170,34 @@ public class MainController {
 
     @PatchMapping("/updateBoard")
     @ResponseBody
-    public String boardUpdate(@RequestBody BoardDTO boardDTO){
+    public ResponseEntity<String> boardUpdate(@RequestBody BoardDTO boardDTO){
         System.out.println(boardDTO.getBoardId()+" \n" + boardDTO.getUserId()+" \n" + boardDTO.getBoardTitle()+" \n" + boardDTO.getBoardContent()+" \n" + boardDTO.getBoardDate());
         boardService.updateBoard(boardDTO);
-        return "글이 수정되었습니다.";
+        return ResponseEntity.status(201).body("글이 수정되었습니다.");
     }
 
     @PostMapping("/deleteBoard")
     @ResponseBody
-    public String boardDelete(@RequestBody BoardDTO boardDTO){
-        System.out.println("delete"+boardDTO.getBoardId()+" \n" + boardDTO.getUserId()+" \n" + boardDTO.getBoardTitle()+" \n" + boardDTO.getBoardContent()+" \n" + boardDTO.getBoardDate());
-        boardService.deleteBoard(boardDTO.getBoardId());
-        return "글이 삭제되었습니다.";
+    public ResponseEntity<String> boardDelete(@RequestBody DeleteBoardDTO boardDTO){
+        System.out.println("delete"+boardDTO.getBoardId()+" \n" + boardDTO.getUserId()+" \n" + boardDTO.getPw());
+        UserDTO getuser = userService.getUser(boardDTO.getUserId());
+        String userPw = userService.checkUser(getuser).getPw();
+        if(userPw.equals(boardDTO.getPw())) {
+            boardService.deleteBoard(boardDTO.getBoardId());
+            return ResponseEntity.status(201).body("글이 삭제되었습니다.");
+        } else return ResponseEntity.status(404).body("비밀번호가 틀렸습니다.");
     }
 
     @PostMapping("/createReply")
     @ResponseBody
-    public String replyCreate(@RequestBody ReplyDTO replyDTO){
-        System.out.println(replyDTO);
-        Long count = replyService.getCount();
-        replyDTO.setReplyId(Long.valueOf(count).intValue()+1);
+    public ResponseEntity<Object> replyCreate(@RequestBody ReplyDTO replyDTO){
         replyService.createReply(replyDTO);
-        return "댓글이 등록되었습니다.";
+        return ResponseEntity.status(201).build();
     }
 
     @PostMapping("/deleteReply")
-    @ResponseBody
-    public String replyDelete(@RequestBody ReplyDTO replyDTO){
+    public ResponseEntity<String> replyDelete(@RequestBody ReplyDTO replyDTO){
         replyService.deleteReply(replyDTO.getReplyId());
-        return "댓글이 삭제되었습니다.";
+        return ResponseEntity.status(204).build();
     }
 }

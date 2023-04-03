@@ -14,6 +14,7 @@ public class ReplyEntity {
     @Id
     @GeneratedValue
     private int replyId;
+
     @ManyToOne
     @JoinColumn(name="userId")
     private UserEntity userEntity;

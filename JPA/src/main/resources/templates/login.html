@@ -27,26 +27,28 @@
 <script th:inline="javascript">
     function signin(){
         let form = document.querySelector('form');
-        console.log(form.id.value,form.pw.value);
-        //if(!form.id.value || !form.pw.value) alert('정보를 모두 입력해 주세요!');
         axios.post(`/login`, {id: form.id.value, pw:form.pw.value})
-        .then((res)=>{
-            console.log(res.data);
-            if(!res.data) {
-                alert("로그인에 실패했습니다");
-                form.reset();
-            } else window.location.href = "/";
+        .then(response => {
+	        if(response.status == 201) window.location.href = "/";
+            else if(response.status == 204) alert("비밀번호가 틀렸습니다.");
         })
+        .catch(error => {
+            if(error.response.status == 400) alert("정보를 모두 입력해 주세요.");
+            else if(error.response.status == 404) alert("회원 정보가 없습니다.");
+            else alert("로그인에 실패했습니다.");
+            form.reset();
+        });
     }
 
     /*<![CDATA[*/
     function logout(){
         axios.post(`/logout`, {id: /*[[${userid}]]*/})
-        .then((res)=>{
-            console.log(res.data);
-            if(!res.data) alert("로그아웃에 실패했습니다");
-            else window.location.href = "/";
+        .then(response=> {
+            window.location.href = "/";
         })
+        .catch(error=> {
+            alert("로그아웃에 실패했습니다.");
+        });
     }
     /*]]>*/
 </script>

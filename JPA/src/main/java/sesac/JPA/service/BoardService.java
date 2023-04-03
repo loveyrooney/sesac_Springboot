@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import sesac.JPA.domain.BoardEntity;
 import sesac.JPA.domain.UserEntity;
 import sesac.JPA.dto.BoardDTO;
+import sesac.JPA.dto.CreateBoardDTO;
 import sesac.JPA.dto.UserDTO;
 import sesac.JPA.repository.BoardRepository;
 import sesac.JPA.repository.ReplyRepository;
@@ -56,7 +57,7 @@ public class BoardService {
         return boards;
     }
 
-    public void createBoard(BoardDTO boardDTO) {
+    public void createBoard(CreateBoardDTO boardDTO) {
         UserDTO getuser = userService.getUser(boardDTO.getUserId());
         UserEntity writer = new UserEntity();
         writer.setId(getuser.getId());

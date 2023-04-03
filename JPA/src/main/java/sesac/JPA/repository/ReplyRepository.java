@@ -14,4 +14,5 @@ public interface ReplyRepository extends JpaRepository<ReplyEntity, Integer> {
     Long countBy();
     Long countByBoardEntity_BoardId(int id);
     List<ReplyEntity> findByBoardEntity_BoardId(int id);
+    List<ReplyEntity> findByUserEntity_Id(String id);
 }

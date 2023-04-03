@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="boardDB")
@@ -26,5 +28,8 @@ public class BoardEntity {
 
     @Column(length = 20, nullable = false)
     private String boardDate;
+
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL)
+    List<ReplyEntity> replyEntityList = new ArrayList<>();
 
 }

@@ -41,20 +41,25 @@
         console.log(check,id.value);
         if(check) {
           axios.post(`/deleteUser`, {id: id.value, pw: check})
-          .then((res)=>{
-            alert(res.data);
+          .then(response =>{
+            alert(response.data);
             window.location.href = "/";
+          })
+          .catch(error=> {
+            if(error.response.status == 404) alert(error.response.data);
+            else alert("회원 탈퇴에 실패하였습니다.");
           });
-        } else alert('유저 정보가 없습니다');
+        }
     }
     /*<![CDATA[*/
     function logout(){
         axios.post(`/logout`, {id: /*[[${userid}]]*/})
-        .then((res)=>{
-            console.log(res.data);
-            if(!res.data) alert("로그아웃에 실패했습니다");
-            else window.location.href = "/";
+        .then(response=> {
+            window.location.href = "/";
         })
+        .catch(error=> {
+            alert("로그아웃에 실패했습니다.");
+        });
     }
     /*]]>*/
 </script>

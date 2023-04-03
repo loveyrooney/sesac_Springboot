@@ -57,11 +57,11 @@
     console.log(form.className);
     if(form.userId.value == 'noname') alert('로그인 후 이용할 수 있습니다.');
     axios.post(`/createReply`, {userId: form.userId.value, boardId: parseInt(form.className), replyContent: form.replyContent.value, replyDate: form.replyDate.value })
-    .then((res)=>{
-        console.log(res.data);
-        if(!res.data) alert("댓글 등록에 실패했습니다");
-        else window.location.reload();
+    .then(res=> {
+        if(res.status == 201) window.location.reload();
+        else alert("댓글 등록에 실패했습니다");
     })
+    .catch(error=> { alert("댓글 등록에 실패했습니다");});
   }
 
   function deleteReply(e){
@@ -69,10 +69,10 @@
     console.log(form.className, e.className);
     axios.post(`/deleteReply`, {replyId: parseInt(e.className)})
     .then((res)=>{
-        console.log(res.data);
-        if(!res.data) alert("댓글 삭제에 실패했습니다");
-        else window.location.reload();
+        if(res.status == 204) window.location.reload();
+        else alert("댓글 삭제에 실패했습니다");
     })
+    .catch(error=> { alert("댓글 삭제에 실패했습니다");});
   }
 </script>
 </body>
