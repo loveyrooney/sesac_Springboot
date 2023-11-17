@@ -41,11 +41,11 @@
         console.log(check,id.value);
         if(check) {
           axios.post(`/deleteUser`, {id: id.value, pw: check})
-          .then(response =>{
+          .then((response)=> {
             alert(response.data);
             window.location.href = "/";
           })
-          .catch(error=> {
+          .catch((error)=> {
             if(error.response.status == 404) alert(error.response.data);
             else alert("회원 탈퇴에 실패하였습니다.");
           });

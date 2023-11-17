@@ -67,15 +67,18 @@ public class UserService {
 
     @Transactional
     public void deleteUser(UserDTO userDTO){
+        Optional<UserEntity> getnulluser = userRepository.findById("nulluser");
         List<BoardEntity> boardList = boardRepository.findByUserEntity_Id(userDTO.getId());
-        UserEntity nullUser = new UserEntity();
-        nullUser.setId("noName");
         for(int i=0; i<boardList.size(); i++){
-            boardList.get(i).setUserEntity(nullUser);
+            boardList.get(i).setUserEntity(getnulluser.get());
+            userRepository.save(getnulluser.get());
+            boardRepository.save(boardList.get(i));
         }
         List<ReplyEntity> replyList = replyRepository.findByUserEntity_Id(userDTO.getId());
         for(int j=0; j<replyList.size(); j++){
-            replyList.get(j).setUserEntity(nullUser);
+            replyList.get(j).setUserEntity(getnulluser.get());
+            userRepository.save(getnulluser.get());
+            boardRepository.save(boardList.get(j));
         }
         userRepository.deleteById(userDTO.getId());
     }

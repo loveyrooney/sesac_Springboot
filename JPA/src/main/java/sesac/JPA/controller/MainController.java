@@ -113,7 +113,7 @@ public class MainController {
     public ResponseEntity<String> updateUser(@RequestBody UserDTO userDTO){
         //System.out.println(userDTO.getId()+userDTO.getPw());
         userService.updateUser(userDTO);
-        return ResponseEntity.status(204).body("회원정보가 수정되었습니다.");
+        return ResponseEntity.status(201).body("회원정보가 수정되었습니다.");
     }
 
     @PostMapping("/deleteUser")
@@ -124,7 +124,7 @@ public class MainController {
             HttpSession session = req.getSession();
             session.invalidate();
             userService.deleteUser(userDTO);
-            return ResponseEntity.status(204).body("회원 탈퇴 되었습니다.");
+            return ResponseEntity.status(201).body("회원 탈퇴 되었습니다.");
         } else return ResponseEntity.status(404).body("비밀번호가 틀렸습니다.");
     }
 
