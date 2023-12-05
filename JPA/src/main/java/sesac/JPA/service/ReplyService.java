@@ -50,16 +50,7 @@ public class ReplyService {
         Long count = replyRepository.countBy();
         return count;
     }
-    public ArrayList<Long> getBoardReplyCount() {
-        List<BoardEntity> boardList = boardRepository.findAll();
-        ArrayList<Long> countList = new ArrayList<>();
-        for (int i = 0; i < boardList.size(); i++) {
-            Long count = replyRepository.countByBoardEntity_BoardId(boardList.get(i).getBoardId());
-            countList.add(count);
-        }
-        //System.out.println(countList);
-        return countList;
-    }
+
     public void createReply(ReplyDTO replyDTO){
         UserDTO getuser = userService.getUser(replyDTO.getUserId());
         UserEntity writer = new UserEntity();

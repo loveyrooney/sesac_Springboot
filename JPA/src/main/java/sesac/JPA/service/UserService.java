@@ -60,9 +60,9 @@ public class UserService {
     }
 
     public void updateUser(UserDTO userDTO){
-        Optional<UserEntity> getuser = userRepository.findById(userDTO.getId());
-        getuser.get().setPw(userDTO.getPw());
-        userRepository.save(getuser.get());
+        UserDTO getuser = getUser(userDTO.getId());
+        getuser.setPw(userDTO.getPw());
+        addUser(userDTO);
     }
 
     @Transactional
