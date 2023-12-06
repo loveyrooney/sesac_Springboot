@@ -13,6 +13,7 @@ import sesac.JPA.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -93,7 +94,7 @@ public class MainController {
 
     @PostMapping("/createUser")
     @ResponseBody
-    public ResponseEntity<String> signup(@RequestBody UserDTO userDTO){
+    public ResponseEntity<String> signup(@Valid @RequestBody UserDTO userDTO){
         userService.addUser(userDTO);
         return ResponseEntity.status(201).body("회원 가입이 성공하였습니다.");
     }

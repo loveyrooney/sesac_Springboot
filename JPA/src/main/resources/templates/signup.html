@@ -27,6 +27,10 @@
         .then((res)=>{
             alert(res.data);
             window.location.href = "/loginHome";
+        })
+        .catch(error => {
+            if(error.response.status == 400) alert(error.response.data.message);
+
         });
     }
 
