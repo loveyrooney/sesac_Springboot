@@ -111,15 +111,14 @@ public class MainController {
 
     @PostMapping("/updateUser")
     @ResponseBody
-    public ResponseEntity<String> updateUser(@RequestBody UserDTO userDTO){
-        //System.out.println(userDTO.getId()+userDTO.getPw());
+    public ResponseEntity<String> updateUser(@Valid @RequestBody UserDTO userDTO){
         userService.updateUser(userDTO);
         return ResponseEntity.status(201).body("회원정보가 수정되었습니다.");
     }
 
     @PostMapping("/deleteUser")
     @ResponseBody
-    public ResponseEntity<String> deleteUser(@RequestBody UserDTO userDTO, HttpServletRequest req){
+    public ResponseEntity<String> deleteUser(@Valid @RequestBody UserDTO userDTO, HttpServletRequest req){
         String userPw = userService.checkUser(userDTO).getPw();
         if(userPw.equals(userDTO.getPw())) {
             HttpSession session = req.getSession();
@@ -151,7 +150,6 @@ public class MainController {
     }
     @PostMapping("/createBoard")
     public String boardCreate(CreateBoardDTO createBoardDTO){
-        System.out.println(createBoardDTO.getUserId()+" \n" + createBoardDTO.getBoardTitle()+" \n" + createBoardDTO.getBoardContent()+" \n" + createBoardDTO.getBoardDate());
         boardService.createBoard(createBoardDTO);
         return "redirect:/";
     }
@@ -172,7 +170,6 @@ public class MainController {
     @PatchMapping("/updateBoard")
     @ResponseBody
     public ResponseEntity<String> boardUpdate(@RequestBody BoardDTO boardDTO){
-        System.out.println(boardDTO.getBoardId()+" \n" + boardDTO.getUserId()+" \n" + boardDTO.getBoardTitle()+" \n" + boardDTO.getBoardContent()+" \n" + boardDTO.getBoardDate());
         boardService.updateBoard(boardDTO);
         return ResponseEntity.status(201).body("글이 수정되었습니다.");
     }
@@ -180,7 +177,6 @@ public class MainController {
     @PostMapping("/deleteBoard")
     @ResponseBody
     public ResponseEntity<String> boardDelete(@RequestBody DeleteBoardDTO boardDTO){
-        System.out.println("delete"+boardDTO.getBoardId()+" \n" + boardDTO.getUserId()+" \n" + boardDTO.getPw());
         UserDTO getuser = userService.getUser(boardDTO.getUserId());
         String userPw = userService.checkUser(getuser).getPw();
         if(userPw.equals(boardDTO.getPw())) {

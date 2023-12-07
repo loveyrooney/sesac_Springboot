@@ -33,7 +33,7 @@ public class BoardService {
         switch (select){
             case "title" : List<BoardEntity> titles = boardRepository.findByBoardTitleContaining(search);
                 return getFinal(titles);
-            case "content" : List<BoardEntity> contents = boardRepository.findByBoardContentContaining(search);
+            case "content" : List<BoardEntity> contents = boardRepository.selectSQLByBoardContentContaining(search);
                 return getFinal(contents);
             case "writer" : List<BoardEntity> writers = boardRepository.findByUserEntity_IdContaining(search);
                 return getFinal(writers);
