@@ -19,14 +19,17 @@ import java.util.Optional;
 
 @Controller
 public class MainController {
-    @Autowired
-    BoardService boardService;
-    @Autowired
-    UserService userService;
+
+    private final BoardService boardService;
+    private final UserService userService;
+    private final ReplyService replyService;
 
     @Autowired
-    ReplyService replyService;
-
+    public MainController(BoardService boardService, UserService userService, ReplyService replyService) {
+        this.boardService = boardService;
+        this.userService = userService;
+        this.replyService = replyService;
+    }
 
     @GetMapping("/")
     public String home(Model model, HttpServletRequest req) {

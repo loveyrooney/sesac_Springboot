@@ -17,12 +17,17 @@ import java.util.Optional;
 
 @Service
 public class BoardService {
+
+    private final BoardRepository boardRepository;
+    private final ReplyRepository replyRepository;
+    private final UserService userService;
+
     @Autowired
-    private BoardRepository boardRepository;
-    @Autowired
-    private ReplyRepository replyRepository;
-    @Autowired
-    UserService userService;
+    public BoardService(BoardRepository boardRepository, ReplyRepository replyRepository, UserService userService) {
+        this.boardRepository = boardRepository;
+        this.replyRepository = replyRepository;
+        this.userService = userService;
+    }
 
     public List<BoardDTO> getBoardList(){
         List<BoardEntity> all = boardRepository.findAll();

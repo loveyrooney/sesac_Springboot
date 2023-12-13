@@ -18,17 +18,18 @@ import java.util.Optional;
 @Service
 public class ReplyService {
 
-    @Autowired
-    private ReplyRepository replyRepository;
+    private final ReplyRepository replyRepository;
+    private final BoardRepository boardRepository;
+    private final UserService userService;
+    private final BoardService boardService;
 
     @Autowired
-    private BoardRepository boardRepository;
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    BoardService boardService;
+    public ReplyService(ReplyRepository replyRepository, BoardRepository boardRepository, BoardService boardService, UserService userService) {
+        this.replyRepository = replyRepository;
+        this.boardRepository = boardRepository;
+        this.boardService = boardService;
+        this.userService = userService;
+    }
 
     public List<ReplyDTO> getReplyList(int id){
         List<ReplyEntity> result = replyRepository.findByBoardEntity_BoardId(id);

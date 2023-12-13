@@ -18,12 +18,16 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    private final UserRepository userRepository;
+    private final BoardRepository boardRepository;
+    private final ReplyRepository replyRepository;
+
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private BoardRepository boardRepository;
-    @Autowired
-    private ReplyRepository replyRepository;
+    public UserService(UserRepository userRepository, BoardRepository boardRepository,ReplyRepository replyRepository) {
+        this.userRepository = userRepository;
+        this.boardRepository = boardRepository;
+        this.replyRepository = replyRepository;
+    }
 
     public UserDTO checkUser(UserDTO userDTO) {
         Optional<UserEntity> getuser = userRepository.findById(userDTO.getId());
@@ -52,7 +56,6 @@ public class UserService {
     }
 
     public void addUser(UserDTO userDTO){
-        //System.out.println(userDTO.getId()+userDTO.getPw());
         UserEntity user = new UserEntity();
         user.setId(userDTO.getId());
         user.setPw(userDTO.getPw());
