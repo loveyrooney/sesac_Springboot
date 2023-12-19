@@ -22,6 +22,7 @@
 <script>
     function signup(){
         let form = document.querySelector('form');
+        if(!form.id.value || !form.pw.value || !form.pwCheck.value) alert("내용을 모두 입력해 주세요!");
         if(form.pw.value != form.pwCheck.value) alert("비밀번호를 정확히 입력해 주세요!");
         axios.post(`/createUser`, {id: form.id.value, pw:form.pw.value})
         .then((res)=>{

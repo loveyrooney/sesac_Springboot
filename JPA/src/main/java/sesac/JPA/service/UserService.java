@@ -1,7 +1,9 @@
 package sesac.JPA.service;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sesac.JPA.domain.BoardEntity;
 import sesac.JPA.domain.ReplyEntity;
@@ -16,38 +18,30 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final ReplyRepository replyRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UserService(UserRepository userRepository, BoardRepository boardRepository,ReplyRepository replyRepository) {
-        this.userRepository = userRepository;
-        this.boardRepository = boardRepository;
-        this.replyRepository = replyRepository;
-    }
-
-    public UserDTO checkUser(UserDTO userDTO) {
+    public String checkUser(UserDTO userDTO) {
         Optional<UserEntity> getuser = userRepository.findById(userDTO.getId());
         if(getuser.isPresent()) {
-            UserDTO getuserDTO = new UserDTO();
-            getuserDTO.setId(getuser.get().getId());
-            getuserDTO.setPw(getuser.get().getPw());
-            return getuserDTO;
+            if(passwordEncoder.matches(userDTO.getPw(),getuser.get().getPw())) {
+                return "verified";
+            } else return "notVerified";
         } else {
-            UserDTO nulluser = new UserDTO();
-            return nulluser;
+            return "notPresent";
         }
     }
 
     public UserDTO getUser(String id) {
         Optional<UserEntity> getuser = userRepository.findById(id);
-        if(getuser != null) {
+        if(getuser.isPresent()) {
             UserDTO user = new UserDTO();
             user.setId(getuser.get().getId());
-            user.setPw(getuser.get().getPw());
             return user;
         } else {
             UserDTO nulluser = new UserDTO();
@@ -55,17 +49,28 @@ public class UserService {
         }
     }
 
-    public void addUser(UserDTO userDTO){
+    public void createUser(UserDTO userDTO) {
         UserEntity user = new UserEntity();
         user.setId(userDTO.getId());
-        user.setPw(userDTO.getPw());
+        user.setPw(passwordEncoder.encode(userDTO.getPw()));
         userRepository.save(user);
     }
 
-    public void updateUser(UserDTO userDTO){
-        UserDTO getuser = getUser(userDTO.getId());
-        getuser.setPw(userDTO.getPw());
-        addUser(userDTO);
+    public String addUser(UserDTO userDTO){
+        String check = checkUser(userDTO);
+        if(check == "notPresent") {
+            createUser(userDTO);
+            return check;
+        } else return "isPresent";
+    }
+
+    public Boolean updateUser(UserDTO userDTO){
+        String check = checkUser(userDTO);
+        if (check == "verified") return false;
+        else {
+            createUser(userDTO);
+            return true;
+        }
     }
 
     @Transactional

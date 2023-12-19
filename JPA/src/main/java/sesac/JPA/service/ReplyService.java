@@ -1,5 +1,6 @@
 package sesac.JPA.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sesac.JPA.domain.BoardEntity;
@@ -16,20 +17,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ReplyService {
 
     private final ReplyRepository replyRepository;
     private final BoardRepository boardRepository;
     private final UserService userService;
     private final BoardService boardService;
-
-    @Autowired
-    public ReplyService(ReplyRepository replyRepository, BoardRepository boardRepository, BoardService boardService, UserService userService) {
-        this.replyRepository = replyRepository;
-        this.boardRepository = boardRepository;
-        this.boardService = boardService;
-        this.userService = userService;
-    }
 
     public List<ReplyDTO> getReplyList(int id){
         List<ReplyEntity> result = replyRepository.findByBoardEntity_BoardId(id);

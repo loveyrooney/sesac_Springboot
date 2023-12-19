@@ -14,7 +14,7 @@
   <h1 style="margin-right: 20px;"><a href="/loginHome" th:text="${userid} != 'noname' ? 'hello,'+${userid}:'login'">login</a></h1>
   <button th:classappend="${userid} == 'noname' ? 'd-none':''" type="button" onclick="logout()">Logout</button>
 </header>
-<button th:classappend="${userid} != 'noname' ? '':'d-none'"><a th:href="'/write/'+${board.getBoardId()}">수정/삭제</a></button>
+<button th:classappend="${userid} == ${board.getUserId()} ? '':'d-none'"><a th:href="'/write/'+${board.getBoardId()}">수정/삭제</a></button>
 <div>
   <div style="display:flex">
     <p style="margin-right: 20px;" th:text="${board.getBoardTitle()}">title</p>

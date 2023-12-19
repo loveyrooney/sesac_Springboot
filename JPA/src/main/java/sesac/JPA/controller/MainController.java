@@ -1,5 +1,6 @@
 package sesac.JPA.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,18 +19,12 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Controller
+@RequiredArgsConstructor
 public class MainController {
 
     private final BoardService boardService;
     private final UserService userService;
     private final ReplyService replyService;
-
-    @Autowired
-    public MainController(BoardService boardService, UserService userService, ReplyService replyService) {
-        this.boardService = boardService;
-        this.userService = userService;
-        this.replyService = replyService;
-    }
 
     @GetMapping("/")
     public String home(Model model, HttpServletRequest req) {
@@ -65,17 +60,18 @@ public class MainController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Boolean> login(@RequestBody UserDTO userDTO, HttpServletRequest request) {
-        if(userDTO.getId().equals("") || userDTO.getPw().equals("")) return ResponseEntity.status(400).body(false);
-        else {
-            UserDTO getuserDTO = userService.checkUser(userDTO);
-            if (getuserDTO.getPw() != null) {
-                if (getuserDTO.getPw().equals(userDTO.getPw())) {
-                    HttpSession session = request.getSession();
-                    session.setAttribute("sessionId", getuserDTO.getId());
-                    return ResponseEntity.status(201).body(true);
-                } else return ResponseEntity.status(204).body(false);
-            } else return ResponseEntity.status(404).body(false);
+    public ResponseEntity<String> login(@RequestBody UserDTO userDTO, HttpServletRequest request) {
+        String check = userService.checkUser(userDTO);
+        switch (check) {
+            case "verified" :
+                HttpSession session = request.getSession();
+                session.setAttribute("sessionId", userDTO.getId());
+                return ResponseEntity.status(201).body("ok");
+            case "notVerified" :
+                return ResponseEntity.status(400).body("비밀번호가 틀렸습니다.");
+            case "notPresent" :
+                return ResponseEntity.status(404).body("회원 정보가 없습니다.");
+            default: return ResponseEntity.status(401).body("you need an authentication");
         }
     }
 
@@ -98,32 +94,29 @@ public class MainController {
     @PostMapping("/createUser")
     @ResponseBody
     public ResponseEntity<String> signup(@Valid @RequestBody UserDTO userDTO){
-        userService.addUser(userDTO);
-        return ResponseEntity.status(201).body("회원 가입이 성공하였습니다.");
+        if(userService.addUser(userDTO) == "notPresent") return ResponseEntity.status(201).body("회원 가입이 성공하였습니다.");
+        else return ResponseEntity.status(400).body("이미 있는 ID 입니다.");
     }
 
     @GetMapping("/users")
     public String users(Model model, HttpServletRequest req) {
         HttpSession session = req.getSession();
         String sessionId = (String)session.getAttribute("sessionId");
-        UserDTO getuser = userService.getUser(sessionId);
         model.addAttribute("userid",sessionId);
-        model.addAttribute("userpw",getuser.getPw());
         return "users";
     }
 
     @PostMapping("/updateUser")
     @ResponseBody
     public ResponseEntity<String> updateUser(@Valid @RequestBody UserDTO userDTO){
-        userService.updateUser(userDTO);
-        return ResponseEntity.status(201).body("회원정보가 수정되었습니다.");
+        if(userService.updateUser(userDTO)) return ResponseEntity.status(201).body("회원정보가 수정되었습니다.");
+        else return ResponseEntity.status(400).body("다른 비밀번호를 입력해 주세요.");
     }
 
     @PostMapping("/deleteUser")
     @ResponseBody
     public ResponseEntity<String> deleteUser(@Valid @RequestBody UserDTO userDTO, HttpServletRequest req){
-        String userPw = userService.checkUser(userDTO).getPw();
-        if(userPw.equals(userDTO.getPw())) {
+        if(userService.checkUser(userDTO) == "verified") {
             HttpSession session = req.getSession();
             session.invalidate();
             userService.deleteUser(userDTO);
@@ -180,9 +173,10 @@ public class MainController {
     @PostMapping("/deleteBoard")
     @ResponseBody
     public ResponseEntity<String> boardDelete(@RequestBody DeleteBoardDTO boardDTO){
-        UserDTO getuser = userService.getUser(boardDTO.getUserId());
-        String userPw = userService.checkUser(getuser).getPw();
-        if(userPw.equals(boardDTO.getPw())) {
+        UserDTO check = new UserDTO();
+        check.setId(boardDTO.getUserId());
+        check.setPw(boardDTO.getPw());
+        if(userService.checkUser(check) == "verified") {
             boardService.deleteBoard(boardDTO.getBoardId());
             return ResponseEntity.status(201).body("글이 삭제되었습니다.");
         } else return ResponseEntity.status(404).body("비밀번호가 틀렸습니다.");

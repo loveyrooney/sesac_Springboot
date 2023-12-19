@@ -13,7 +13,6 @@ import java.util.Optional;
 @Repository
 public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
 
-    Long countBy();
     List<BoardEntity> findByBoardTitleContaining(String title);
 
     @Query(value="SELECT * FROM boarddb WHERE convert_from(lo_get(cast(board_content as bigint)),'UTF-8') LIKE %:content%",nativeQuery = true)

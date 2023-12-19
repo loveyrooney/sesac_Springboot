@@ -13,7 +13,7 @@ public class UserDTO {
     @Id
     private String id;
 
-    @Pattern(regexp="^[a-zA-Z]\\w{5,14}$", message="비밀번호는 영문 대소문자와 특수기호를 포함하여 5-14자리 내에 있어야 합니다")
+    @Pattern(regexp="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{5,14}$", message="비밀번호는 영문 대소문자와 숫자, 특수기호를 포함하여 5-14자리 내에 있어야 합니다")
     private String pw;
 
 }

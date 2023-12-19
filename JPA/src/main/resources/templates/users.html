@@ -15,7 +15,6 @@
   <h3 th:text="${userid}">여기 th 처리</h3>
   <form id="modify">
     <input type="text" name="id" th:value="${userid}" disabled/><br>
-    <input type="password" name="pw" th:value="${userpw}" disabled/><br>
     <input type="text" name="newPw" placeholder="new password" required/><br>
     <input type="text" name="newPwCheck" placeholder="new password check" required/><br>
     <button type="button" onclick="modify()">회원정보수정</button>
@@ -26,7 +25,6 @@
         let form = document.querySelector('#modify');
         if(!form.newPw.value || !form.newPwCheck.value) alert("비밀번호를 모두 입력해 주세요!");
         else if(form.newPw.value != form.newPwCheck.value) alert("비밀번호를 정확히 입력해 주세요!");
-        else if(form.newPw.value == form.pw.value) alert("다른 비밀번호를 입력해 주세요!");
         else { axios.post(`/updateUser`, {id: form.id.value, pw: form.newPw.value})
                 .then((res)=>{
                   alert(res.data);

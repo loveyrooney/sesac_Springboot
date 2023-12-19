@@ -1,5 +1,6 @@
 package sesac.JPA.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sesac.JPA.domain.BoardEntity;
@@ -16,18 +17,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;
     private final ReplyRepository replyRepository;
     private final UserService userService;
-
-    @Autowired
-    public BoardService(BoardRepository boardRepository, ReplyRepository replyRepository, UserService userService) {
-        this.boardRepository = boardRepository;
-        this.replyRepository = replyRepository;
-        this.userService = userService;
-    }
 
     public List<BoardDTO> getBoardList(){
         List<BoardEntity> all = boardRepository.findAll();
@@ -66,7 +61,6 @@ public class BoardService {
         UserDTO getuser = userService.getUser(boardDTO.getUserId());
         UserEntity writer = new UserEntity();
         writer.setId(getuser.getId());
-        writer.setPw(getuser.getPw());
 
         BoardEntity newBoard = new BoardEntity();
         newBoard.setUserEntity(writer);
@@ -87,11 +81,6 @@ public class BoardService {
         targetBoard.setBoardDate(target.get().getBoardDate());
         System.out.println("service"+target.get().getBoardId()+target.get().getUserEntity().getId());
         return targetBoard;
-    }
-
-    public Long getCount() {
-        Long count = boardRepository.countBy();
-        return count;
     }
 
     public void updateBoard(BoardDTO boardDTO){
