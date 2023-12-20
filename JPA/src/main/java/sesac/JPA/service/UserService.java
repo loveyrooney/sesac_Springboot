@@ -26,6 +26,12 @@ public class UserService {
     private final ReplyRepository replyRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public Boolean isUser(String id) {
+        Optional<UserEntity> getuser = userRepository.findById(id);
+        if(getuser.isPresent()) return true;
+        else return false;
+    }
+
     public String checkUser(UserDTO userDTO) {
         Optional<UserEntity> getuser = userRepository.findById(userDTO.getId());
         if(getuser.isPresent()) {
@@ -34,18 +40,6 @@ public class UserService {
             } else return "notVerified";
         } else {
             return "notPresent";
-        }
-    }
-
-    public UserDTO getUser(String id) {
-        Optional<UserEntity> getuser = userRepository.findById(id);
-        if(getuser.isPresent()) {
-            UserDTO user = new UserDTO();
-            user.setId(getuser.get().getId());
-            return user;
-        } else {
-            UserDTO nulluser = new UserDTO();
-            return nulluser;
         }
     }
 

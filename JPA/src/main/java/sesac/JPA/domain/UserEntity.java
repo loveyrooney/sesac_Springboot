@@ -14,7 +14,7 @@ import java.util.List;
 public class UserEntity {
 
     @Id
-    @Column(length = 20, nullable = false , name="userId")
+    @Column(length = 100, nullable = false , name="userId")
     private String id;
 
     @Column(length = 14, nullable = false)

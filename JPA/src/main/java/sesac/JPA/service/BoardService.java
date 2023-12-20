@@ -58,17 +58,18 @@ public class BoardService {
     }
 
     public void createBoard(CreateBoardDTO boardDTO) {
-        UserDTO getuser = userService.getUser(boardDTO.getUserId());
-        UserEntity writer = new UserEntity();
-        writer.setId(getuser.getId());
+        if(userService.isUser(boardDTO.getUserId())) {
+            UserEntity writer = new UserEntity();
+            writer.setId(boardDTO.getUserId());
 
-        BoardEntity newBoard = new BoardEntity();
-        newBoard.setUserEntity(writer);
-        newBoard.setBoardTitle(boardDTO.getBoardTitle());
-        newBoard.setBoardContent(boardDTO.getBoardContent());
-        newBoard.setBoardDate(boardDTO.getBoardDate());
+            BoardEntity newBoard = new BoardEntity();
+            newBoard.setUserEntity(writer);
+            newBoard.setBoardTitle(boardDTO.getBoardTitle());
+            newBoard.setBoardContent(boardDTO.getBoardContent());
+            newBoard.setBoardDate(boardDTO.getBoardDate());
 
-        boardRepository.save(newBoard);
+            boardRepository.save(newBoard);
+        }
     }
 
     public BoardDTO getBoardInfo(int id) {

@@ -47,21 +47,22 @@ public class ReplyService {
     }
 
     public void createReply(ReplyDTO replyDTO){
-        UserDTO getuser = userService.getUser(replyDTO.getUserId());
-        UserEntity writer = new UserEntity();
-        writer.setId(getuser.getId());
+        if(userService.isUser(replyDTO.getUserId())) {
+            UserEntity writer = new UserEntity();
+            writer.setId(replyDTO.getUserId());
 
-        BoardDTO getboard = boardService.getBoardInfo(replyDTO.getBoardId());
-        BoardEntity board = new BoardEntity();
-        board.setBoardId(getboard.getBoardId());
+            BoardDTO getboard = boardService.getBoardInfo(replyDTO.getBoardId());
+            BoardEntity board = new BoardEntity();
+            board.setBoardId(getboard.getBoardId());
 
-        ReplyEntity newReply = new ReplyEntity();
-        newReply.setUserEntity(writer);
-        newReply.setBoardEntity(board);
-        newReply.setReplyContent(replyDTO.getReplyContent());
-        newReply.setReplyDate(replyDTO.getReplyDate());
+            ReplyEntity newReply = new ReplyEntity();
+            newReply.setUserEntity(writer);
+            newReply.setBoardEntity(board);
+            newReply.setReplyContent(replyDTO.getReplyContent());
+            newReply.setReplyDate(replyDTO.getReplyDate());
 
-        replyRepository.save(newReply);
+            replyRepository.save(newReply);
+        }
     }
 
     public ReplyDTO getReplyInfo(int id) {
