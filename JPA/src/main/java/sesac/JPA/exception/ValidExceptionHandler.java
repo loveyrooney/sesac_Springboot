@@ -1,4 +1,4 @@
-package sesac.JPA.controller;
+package sesac.JPA.exception;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

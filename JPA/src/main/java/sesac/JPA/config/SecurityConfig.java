@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .cors()
                 .and()
                 .authorizeRequests()
-                    .antMatchers("/users","/write/**").authenticated()
+                    .antMatchers("/user","/write/**").authenticated()
                     .anyRequest().permitAll()
                     .and()
                 .build();
