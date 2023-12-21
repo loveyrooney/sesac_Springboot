@@ -92,8 +92,8 @@ public class MainController {
 
     @PostMapping("/mailAuthReq")
     @ResponseBody
-    public ResponseEntity<String> mailAuth(@Valid @RequestBody String id) {
-        if(emailService.sendMail(id)) return ResponseEntity.status(201).body("이메일 인증코드를 요청하였습니다.");
+    public ResponseEntity<String> mailAuth(@Valid @RequestBody UserDTO userDTO) {
+        if(emailService.sendMail(userDTO.getId())) return ResponseEntity.status(201).body("이메일 인증코드를 요청하였습니다.");
         else return ResponseEntity.status(400).body("이메일 인증 요청에 실패했습니다.");
     }
 

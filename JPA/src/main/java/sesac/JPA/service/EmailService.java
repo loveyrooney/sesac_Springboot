@@ -1,9 +1,12 @@
 package sesac.JPA.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import sesac.JPA.config.EmailConfig;
 import sesac.JPA.dto.MailAuthDTO;
 
 import java.util.UUID;
@@ -14,6 +17,7 @@ public class EmailService {
 
     private final JavaMailSender javaMailSender;
     private final UserService userService;
+    private final EmailConfig emailConfig;
 
     public Boolean sendMail(String mail) {
         if(userService.isUser(mail)) return false;
@@ -41,9 +45,10 @@ public class EmailService {
 
     private SimpleMailMessage mailForm(MailAuthDTO mailAuthDTO) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(emailConfig.getId());
         message.setTo(mailAuthDTO.getTo());
         message.setSubject("[javaboard] 이메일 인증 코드 입니다.");
-        message.setText(mailAuthDTO.getAuthCode());
+        message.setText("인증코드: " + mailAuthDTO.getAuthCode());
         return message;
     }
 
