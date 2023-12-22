@@ -2,14 +2,19 @@ package sesac.JPA.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sesac.JPA.config.EmailConfig;
 import sesac.JPA.dto.MailAuthDTO;
 
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +23,8 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     private final UserService userService;
     private final EmailConfig emailConfig;
+    private final PasswordEncoder encoder;
+    ConcurrentHashMap<String, String> mailAuthInfo = new ConcurrentHashMap<>();
 
     public Boolean sendMail(String mail) {
         if(userService.isUser(mail)) return false;
@@ -36,10 +43,10 @@ public class EmailService {
 
     private MailAuthDTO createAuthCode(String mail) {
         MailAuthDTO mailAuthDTO = new MailAuthDTO();
-        UUID uuid = UUID.randomUUID();
         mailAuthDTO.setTo(mail);
-        mailAuthDTO.setAuthCode(uuid.toString());
-        //인증코드 보관해 둬야 함
+        UUID uuid = UUID.randomUUID();
+        mailAuthDTO.setTo(uuid.toString());
+        mailAuthInfo.put(mailAuthDTO.getTo(),encoder.encode(mailAuthDTO.getAuthCode()));
         return mailAuthDTO;
     }
 
@@ -52,6 +59,15 @@ public class EmailService {
         return message;
     }
 
-    //인증번호 체크 메서드
+    public Boolean authCodeCheck(MailAuthDTO mailAuthDTO) {
+        if(mailAuthInfo.containsKey(mailAuthDTO.getTo())) {
+            if(encoder.matches(mailAuthDTO.getAuthCode(),mailAuthInfo.get(mailAuthDTO.getTo()))) {
+                mailAuthInfo.remove(mailAuthDTO.getTo());
+            } else System.out.println("authcode don't mached.");
+        }
+        //else throw new BusinessLogicException(ExceptionCode.UNABLE_TO_SEND_EMAIL);
+        return true;
+    }
+
 
 }

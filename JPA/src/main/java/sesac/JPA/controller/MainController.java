@@ -1,6 +1,7 @@
 package sesac.JPA.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -97,13 +98,12 @@ public class MainController {
         else return ResponseEntity.status(400).body("이메일 인증 요청에 실패했습니다.");
     }
 
-//    인증번호 확인
-//    @PostMapping("/authCodeReq")
-//    @ResponseBody
-//    public ResponseEntity<String> mailAuth(@Valid @RequestBody String authCode) {
-//        if(emailService.인증번호체크메서드(authCode)) return ResponseEntity.status(201).body("이메일 인증에 성공하였습니다.");
-//        else return ResponseEntity.status(400).body("이메일 인증에 실패했습니다.");
-//    }
+    @PostMapping("/authCodeReq")
+    @ResponseBody
+    public ResponseEntity<String> mailAuthCheck(@Valid @RequestBody MailAuthDTO mailAuthDTO) {
+        if(emailService.authCodeCheck(mailAuthDTO)) return ResponseEntity.status(201).body("이메일 인증에 성공하였습니다.");
+        else return ResponseEntity.status(400).body("이메일 인증에 실패했습니다.");
+    }
 
     @PostMapping("/createUser")
     @ResponseBody

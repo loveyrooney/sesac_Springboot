@@ -30,9 +30,10 @@
     function mailauth(){
         let email = document.querySelector("input[name=id]");
         if(!email.value) alert("이메일을 입력해 주세요!");
-        else { axios.post(`/mailAuthReq`, {id: email.value})
+        else { axios.post(`/mailAuthReq`, {id: email.value, pw:"PleaseAuth01!"})
             .then((res)=>{
                 alert(res.data);
+                email.disabled = true;
             })
             .catch(error => {
                 if(error.response.status == 400) { alert(error.response.data.message);
@@ -44,8 +45,9 @@
     function authcode(){
         let verify = document.querySelector("input[name=verify]");
         let authCode = document.querySelector("input[name=authcode]");
+        let email = document.querySelector("input[name=id]");
         if(authCode != "") {
-             axios.post(`/authCodeReq`, {authCode: authCode})
+             axios.post(`/authCodeReq`, {to: email, authCode: authCode})
              .then((res)=>{
                   alert(res.data);
                   verify.className = 'd-none';
