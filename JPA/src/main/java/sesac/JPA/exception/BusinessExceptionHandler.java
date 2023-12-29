@@ -3,6 +3,7 @@ package sesac.JPA.exception;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -13,7 +14,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class BusinessExceptionHandler {
     @ExceptionHandler(value = BusinessException.class)
-    public ResponseEntity<Map<String, String>> handleException(BusinessException e, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> BusinessHandleException(BusinessException e, HttpServletRequest request) {
 
         HttpHeaders responseHeaders = new HttpHeaders();
         HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
@@ -22,6 +23,20 @@ public class BusinessExceptionHandler {
         map.put("error type", httpStatus.getReasonPhrase());
         map.put("code", e.getErrorCode().getHttpStatus().toString());
         map.put("message", e.getErrorCode().getMessage());
+
+        return new ResponseEntity<>(map, responseHeaders, httpStatus);
+    }
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> ValidHandleException(MethodArgumentNotValidException e, HttpServletRequest request) {
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        Map<String, String> map = new HashMap<>();
+        map.put("error type", httpStatus.getReasonPhrase());
+        map.put("code", "400");
+        map.put("message", e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
 
         return new ResponseEntity<>(map, responseHeaders, httpStatus);
     }

@@ -62,7 +62,7 @@ public class EmailService {
                 mailAuthInfo.remove(mailAuthDTO.getTo());
             } else System.out.println("authcode don't mached.");
         }
-        else throw new BusinessException(ErrorCode.NOT_EXIST_AUTHCODE);
+        else throw new BusinessException(ErrorCode.NOT_EXIST_AUTHCODE );
         return true;
     }
 
