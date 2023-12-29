@@ -1,17 +1,14 @@
 package sesac.JPA.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sesac.JPA.config.EmailConfig;
 import sesac.JPA.dto.MailAuthDTO;
+import sesac.JPA.exception.BusinessException;
+import sesac.JPA.exception.ErrorCode;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,7 +32,7 @@ public class EmailService {
                 javaMailSender.send(emailForm);
             } catch (RuntimeException e) {
                   System.out.println(e.getMessage());
-//                throw new BusinessLogicException(ExceptionCode.UNABLE_TO_SEND_EMAIL);
+                  throw new BusinessException(ErrorCode.UNABLE_TO_SEND_MAIL);
             }
             return true;
         }
@@ -45,7 +42,7 @@ public class EmailService {
         MailAuthDTO mailAuthDTO = new MailAuthDTO();
         mailAuthDTO.setTo(mail);
         UUID uuid = UUID.randomUUID();
-        mailAuthDTO.setTo(uuid.toString());
+        mailAuthDTO.setAuthCode(uuid.toString());
         mailAuthInfo.put(mailAuthDTO.getTo(),encoder.encode(mailAuthDTO.getAuthCode()));
         return mailAuthDTO;
     }
@@ -65,7 +62,7 @@ public class EmailService {
                 mailAuthInfo.remove(mailAuthDTO.getTo());
             } else System.out.println("authcode don't mached.");
         }
-        //else throw new BusinessLogicException(ExceptionCode.UNABLE_TO_SEND_EMAIL);
+        else throw new BusinessException(ErrorCode.NOT_EXIST_AUTHCODE);
         return true;
     }
 

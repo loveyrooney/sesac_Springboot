@@ -27,8 +27,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public Boolean isUser(String id) {
-        Optional<UserEntity> getuser = userRepository.findById(id);
-        if(getuser.isPresent()) return true;
+        if(userRepository.existsById(id)) return true;
         else return false;
     }
 
