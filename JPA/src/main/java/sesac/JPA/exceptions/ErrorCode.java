@@ -1,4 +1,4 @@
-package sesac.JPA.exception;
+package sesac.JPA.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

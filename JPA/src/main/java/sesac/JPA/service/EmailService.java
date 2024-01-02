@@ -7,8 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sesac.JPA.config.EmailConfig;
 import sesac.JPA.dto.MailAuthDTO;
-import sesac.JPA.exception.BusinessException;
-import sesac.JPA.exception.ErrorCode;
+import sesac.JPA.exceptions.BusinessException;
+import sesac.JPA.exceptions.ErrorCode;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,7 +62,7 @@ public class EmailService {
                 mailAuthInfo.remove(mailAuthDTO.getTo());
             } else System.out.println("authcode don't mached.");
         }
-        else throw new BusinessException(ErrorCode.NOT_EXIST_AUTHCODE );
+        else throw new BusinessException(ErrorCode.NOT_EXIST_AUTHCODE);
         return true;
     }
 
