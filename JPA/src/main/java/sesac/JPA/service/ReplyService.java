@@ -1,27 +1,22 @@
 package sesac.JPA.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sesac.JPA.domain.BoardEntity;
 import sesac.JPA.domain.ReplyEntity;
 import sesac.JPA.domain.UserEntity;
 import sesac.JPA.dto.BoardDTO;
 import sesac.JPA.dto.ReplyDTO;
-import sesac.JPA.dto.UserDTO;
-import sesac.JPA.repository.BoardRepository;
 import sesac.JPA.repository.ReplyRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ReplyService {
 
     private final ReplyRepository replyRepository;
-    private final BoardRepository boardRepository;
     private final UserService userService;
     private final BoardService boardService;
 
@@ -41,10 +36,10 @@ public class ReplyService {
             return replies;
     }
 
-    public Long getCount() {
-        Long count = replyRepository.countBy();
-        return count;
-    }
+//    public Long getCount() {
+//        Long count = replyRepository.countBy();
+//        return count;
+//    }
 
     public void createReply(ReplyDTO replyDTO){
         if(userService.isUser(replyDTO.getUserId())) {
@@ -65,17 +60,17 @@ public class ReplyService {
         }
     }
 
-    public ReplyDTO getReplyInfo(int id) {
-        Optional<ReplyEntity> target = replyRepository.findById(id);
-        ReplyDTO targetReply = new ReplyDTO();
-        targetReply.setReplyId(target.get().getReplyId());
-        targetReply.setUserId(target.get().getUserEntity().getId());
-        targetReply.setBoardId(target.get().getBoardEntity().getBoardId());
-        targetReply.setReplyContent(target.get().getReplyContent());
-        targetReply.setReplyDate(target.get().getReplyDate());
-
-        return targetReply;
-    }
+//    public ReplyDTO getReplyInfo(int id) {
+//        Optional<ReplyEntity> target = replyRepository.findById(id);
+//        ReplyDTO targetReply = new ReplyDTO();
+//        targetReply.setReplyId(target.get().getReplyId());
+//        targetReply.setUserId(target.get().getUserEntity().getId());
+//        targetReply.setBoardId(target.get().getBoardEntity().getBoardId());
+//        targetReply.setReplyContent(target.get().getReplyContent());
+//        targetReply.setReplyDate(target.get().getReplyDate());
+//
+//        return targetReply;
+//    }
 
     public void deleteReply(int id){
         replyRepository.deleteById(id);

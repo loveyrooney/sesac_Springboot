@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -108,7 +109,7 @@ public class MainController {
     @PostMapping("/createUser")
     @ResponseBody
     public ResponseEntity<String> signup(@Valid @RequestBody UserDTO userDTO){
-        if(userService.addUser(userDTO) == "notPresent") return ResponseEntity.status(201).body("회원 가입이 성공하였습니다.");
+        if(userService.addUser(userDTO).equals("notPresent")) return ResponseEntity.status(201).body("회원 가입이 성공하였습니다.");
         else return ResponseEntity.status(400).body("이미 있는 ID 입니다.");
     }
 
@@ -130,7 +131,7 @@ public class MainController {
     @PostMapping("/deleteUser")
     @ResponseBody
     public ResponseEntity<String> deleteUser(@Valid @RequestBody UserDTO userDTO, HttpServletRequest req){
-        if(userService.checkUser(userDTO) == "verified") {
+        if(userService.checkUser(userDTO).equals("verified")) {
             HttpSession session = req.getSession();
             session.invalidate();
             userService.deleteUser(userDTO);
@@ -144,8 +145,7 @@ public class MainController {
         ArrayList<ReplyDTO> replyList = (ArrayList<ReplyDTO>) replyService.getReplyList(id);
         HttpSession session = req.getSession();
         String sessionId = (String)session.getAttribute("sessionId");
-        if(sessionId != null) model.addAttribute("userid",sessionId);
-        else model.addAttribute("userid","noname");
+        model.addAttribute("userid", Objects.requireNonNullElse(sessionId, "noname"));
         model.addAttribute("board",targetBoard);
         model.addAttribute("list",replyList);
         return "boardContent";
@@ -190,7 +190,7 @@ public class MainController {
         UserDTO check = new UserDTO();
         check.setId(boardDTO.getUserId());
         check.setPw(boardDTO.getPw());
-        if(userService.checkUser(check) == "verified") {
+        if(userService.checkUser(check).equals("verified")) {
             boardService.deleteBoard(boardDTO.getBoardId());
             return ResponseEntity.status(201).body("글이 삭제되었습니다.");
         } else return ResponseEntity.status(404).body("비밀번호가 틀렸습니다.");

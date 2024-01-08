@@ -27,22 +27,24 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public Boolean isUser(String id) {
-        if(userRepository.existsById(id)) return true;
-        else return false;
+        return userRepository.existsById(id);
     }
 
     public String checkUser(UserDTO userDTO) {
         Optional<UserEntity> getuser = userRepository.findById(userDTO.getId());
-        if(getuser.isPresent()) {
-            if(passwordEncoder.matches(userDTO.getPw(),getuser.get().getPw())) {
-                return "verified";
-            } else return "notVerified";
-        } else {
-            return "notPresent";
-        }
+        String result = getuser
+                .map(user -> {
+                    if (passwordEncoder.matches(userDTO.getPw(),user.getPw())) {
+                        return "verified";
+                    } else {
+                        return "notVerified";
+                    }
+                })
+                .orElse("notPresent");
+        return result;
     }
 
-    public void createUser(UserDTO userDTO) {
+    private void createUser(UserDTO userDTO) {
         UserEntity user = new UserEntity();
         user.setId(userDTO.getId());
         user.setPw(passwordEncoder.encode(userDTO.getPw()));
@@ -51,7 +53,7 @@ public class UserService {
 
     public String addUser(UserDTO userDTO){
         String check = checkUser(userDTO);
-        if(check == "notPresent") {
+        if(check.equals("notPresent")) {
             createUser(userDTO);
             return check;
         } else return "isPresent";
@@ -59,7 +61,7 @@ public class UserService {
 
     public Boolean updateUser(UserDTO userDTO){
         String check = checkUser(userDTO);
-        if (check == "verified") return false;
+        if (check.equals("verified")) return false;
         else {
             createUser(userDTO);
             return true;

@@ -1,20 +1,19 @@
 package sesac.JPA.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sesac.JPA.domain.BoardEntity;
 import sesac.JPA.domain.UserEntity;
 import sesac.JPA.dto.BoardDTO;
 import sesac.JPA.dto.CreateBoardDTO;
-import sesac.JPA.dto.UserDTO;
+import sesac.JPA.exceptions.BusinessException;
+import sesac.JPA.exceptions.ErrorCode;
 import sesac.JPA.repository.BoardRepository;
 import sesac.JPA.repository.ReplyRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -73,22 +72,22 @@ public class BoardService {
     }
 
     public BoardDTO getBoardInfo(int id) {
-        Optional<BoardEntity> target = boardRepository.findById(id);
+        BoardEntity target = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_BOARD));
         BoardDTO targetBoard = new BoardDTO();
-        targetBoard.setBoardId(target.get().getBoardId());
-        targetBoard.setUserId(target.get().getUserEntity().getId());
-        targetBoard.setBoardTitle(target.get().getBoardTitle());
-        targetBoard.setBoardContent(target.get().getBoardContent());
-        targetBoard.setBoardDate(target.get().getBoardDate());
-        System.out.println("service"+target.get().getBoardId()+target.get().getUserEntity().getId());
+        targetBoard.setBoardId(target.getBoardId());
+        targetBoard.setUserId(target.getUserEntity().getId());
+        targetBoard.setBoardTitle(target.getBoardTitle());
+        targetBoard.setBoardContent(target.getBoardContent());
+        targetBoard.setBoardDate(target.getBoardDate());
+        System.out.println("service"+target.getBoardId()+target.getUserEntity().getId());
         return targetBoard;
     }
 
     public void updateBoard(BoardDTO boardDTO){
-        Optional<BoardEntity> target = boardRepository.findById(boardDTO.getBoardId());
-        target.get().setBoardTitle(boardDTO.getBoardTitle());
-        target.get().setBoardContent(boardDTO.getBoardContent());
-        boardRepository.save(target.get());
+        BoardEntity target = boardRepository.findById(boardDTO.getBoardId()).orElseThrow(()-> new BusinessException(ErrorCode.NOT_EXIST_BOARD));
+        target.setBoardTitle(boardDTO.getBoardTitle());
+        target.setBoardContent(boardDTO.getBoardContent());
+        boardRepository.save(target);
     }
 
     public void deleteBoard(int id){
