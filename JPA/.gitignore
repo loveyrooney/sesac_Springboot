@@ -18,9 +18,10 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-email.properties
+secure.properties
 db.properties
 
+*.pem
 .idea
 *.iws
 *.iml

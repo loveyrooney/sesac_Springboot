@@ -11,7 +11,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:email.properties")
+@PropertySource("classpath:secure.properties")
 @Getter
 public class EmailConfig {
 
