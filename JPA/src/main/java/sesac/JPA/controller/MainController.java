@@ -1,11 +1,11 @@
 package sesac.JPA.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import sesac.JPA.auth.JwtToken;
 import sesac.JPA.dto.*;
 import sesac.JPA.service.BoardService;
 import sesac.JPA.service.EmailService;

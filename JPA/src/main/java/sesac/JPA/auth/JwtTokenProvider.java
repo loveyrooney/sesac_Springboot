@@ -26,32 +26,32 @@ public class JwtTokenProvider {
     @Value("${jwt.private-key}")
     private String jwtPrivateKey;
 
-    public PublicKey generateJwtKeyDecryption() throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private PublicKey generateJwtKeyDecryption() throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         byte[] keyBytes = Base64.decodeBase64(jwtPublicKey);
         X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(keyBytes);
         return keyFactory.generatePublic(x509EncodedKeySpec);
     }
 
-    public PrivateKey generateJwtKeyEncryption() throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private PrivateKey generateJwtKeyEncryption() throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         byte[] keyBytes = Base64.decodeBase64(jwtPrivateKey);
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(keyBytes);
         return keyFactory.generatePrivate(pkcs8EncodedKeySpec);
     }
 
-    public JwtToken generateToken(String userName) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public JwtToken generateToken(String userId) throws NoSuchAlgorithmException, InvalidKeySpecException {
         String accessToken = Jwts.builder()
-                .setSubject(userName)
+                .setSubject(userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + 86400000))
-                .signWith(SignatureAlgorithm.RS256, generateJwtKeyEncryption())
+                .signWith(generateJwtKeyEncryption(), SignatureAlgorithm.RS256)
                 .compact();
 
         String refreshToken = Jwts.builder()
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + 1209600000))
-                .signWith(SignatureAlgorithm.RS256, generateJwtKeyEncryption())
+                .signWith(generateJwtKeyEncryption(), SignatureAlgorithm.RS256)
                 .compact();
 
         return JwtToken.builder()
@@ -77,7 +77,7 @@ public class JwtTokenProvider {
         } catch (InvalidKeySpecException e) {
             System.out.println("invalid key exception");
         }
-        return "false";
+        return "notValid";
     }
 
 }
