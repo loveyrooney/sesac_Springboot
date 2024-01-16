@@ -30,7 +30,9 @@
         if(!form.id.value || !form.pw.value) alert("내용을 모두 입력해 주세요!");
         else { axios.post(`/login`, {id: form.id.value, pw:form.pw.value})
             .then(response => {
-	            if(response.status == 201) window.location.href = "/";
+                console.log(response);
+                localStorage.setItem("AT",response.headers.authorization);
+	            window.location.href = "/";
             })
             .catch(error => {
                 if (error.response.data) alert(error.response.data);

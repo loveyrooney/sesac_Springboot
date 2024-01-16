@@ -30,9 +30,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
-            return bearerToken.substring(7);
+        String accessToken = request.getHeader("Authorization");
+        String refreshToken = request.getHeader("Set-Cookie");
+        System.out.println("in resolveToken method: "+accessToken+", "+refreshToken);
+        if (StringUtils.hasText(accessToken) && accessToken.startsWith("Bearer")) {
+            return accessToken.substring(7);
+        } else if (StringUtils.hasText(refreshToken) && refreshToken.startsWith("Bearer")) {
+            return refreshToken.substring(7);
         }
         return null;
     }

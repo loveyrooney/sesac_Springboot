@@ -19,7 +19,7 @@
         <input type="text" name="id" placeholder="email" required/>
         <button type="button" onclick="mailauth()">이메일인증요청</button><br>
         <input type="text" name="authcode" placeholder="인증코드" required/>
-        <button type="button" onclick="authcode()">인증코드전송</button><br>
+        <button type="button" onclick="authcodeSend()">인증코드전송</button><br>
         <input class="d-none" type="text" name="verify" value="이메일 인증에 성공하였습니다."/>
         <input type="text" name="pw" placeholder="pw" required/><br>
         <input type="text" name="pwCheck" placeholder="pwCheck" required/><br>
@@ -42,36 +42,36 @@
         }
     }
 
-    function authcode(){
+    function authcodeSend(){
         let verify = document.querySelector("input[name=verify]");
-        let authCode = document.querySelector("input[name=authcode]");
+        let code = document.querySelector("input[name=authcode]");
         let email = document.querySelector("input[name=id]");
-        if(authCode != "") {
-             axios.post(`/authCodeReq`, {to: email, authCode: authCode})
+        if(code != "") {
+             axios.post(`/authCodeReq`, {to: email.value, authCode: code.value})
              .then((res)=>{
                   alert(res.data);
-                  verify.className = 'd-none';
+                  verify.className = "";
              })
              .catch(error=>{
-                  if(error.response.status == 400) alert(error.response.data.message);
-                  window.location.href = "/signupHome";
+                  console.log(error.response.data);
+                  //window.location.href = "/signupHome";
              });
         } else alert("인증코드를 입력하세요!");
     }
 
     function signup(){
-        let auth = document.querySelector("input[name=auth]");
+        let verify = document.querySelector("input[name=verify]");
         let form = document.querySelector("form");
         if(!form.id.value || !form.pw.value) alert("내용을 모두 입력해 주세요!");
         else if(form.pw.value != form.pwCheck.value) alert("비밀번호를 정확히 입력해 주세요!");
-        else if(auth.className == 'd-none') alert("이메일을 인증해 주세요!");
+        else if(verify.className == "d-none") alert("이메일을 인증해 주세요!");
         else { axios.post(`/createUser`, {id: form.id.value, pw: form.pw.value})
             .then((res)=>{
                 alert(res.data);
                 window.location.href = "/loginHome";
             })
             .catch(error => {
-                if(error.response.status == 400) alert(error.response.data.message);
+                console.log(error.response.data);
             });
         }
     }

@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class ValidHandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> ValidHandleException(MethodArgumentNotValidException e, HttpServletRequest request) {
@@ -25,6 +25,20 @@ public class ValidHandler {
         map.put("code", "400");
         map.put("message", e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
 
+        return new ResponseEntity<>(map, responseHeaders, httpStatus);
+    }
+
+    @ExceptionHandler(value = BusinessException.class)
+    public ResponseEntity<Map<String, String>> BusinessHandleException(BusinessException e, HttpServletRequest request) {
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
+
+        Map<String, String> map = new HashMap<>();
+        map.put("error type", httpStatus.getReasonPhrase());
+        map.put("code", e.getErrorCode().getHttpStatus().toString());
+        map.put("message", e.getErrorCode().getMessage());
+        System.out.println(e.getErrorCode().getMessage());
         return new ResponseEntity<>(map, responseHeaders, httpStatus);
     }
 }

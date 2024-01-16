@@ -5,6 +5,8 @@ import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import sesac.JPA.auth.JwtToken;
+import sesac.JPA.auth.JwtTokenProvider;
 import sesac.JPA.domain.BoardEntity;
 import sesac.JPA.domain.ReplyEntity;
 import sesac.JPA.domain.UserEntity;
@@ -14,6 +16,8 @@ import sesac.JPA.repository.ReplyRepository;
 import sesac.JPA.repository.UserRepository;
 
 import javax.transaction.Transactional;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +29,7 @@ public class UserService {
     private final BoardRepository boardRepository;
     private final ReplyRepository replyRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public Boolean isUser(String id) {
         return userRepository.existsById(id);
@@ -84,6 +89,10 @@ public class UserService {
             boardRepository.save(boardList.get(j));
         }
         userRepository.deleteById(userDTO.getId());
+    }
+
+    public JwtToken login(UserDTO userDTO) {
+        return jwtTokenProvider.generateToken(userDTO.getId());
     }
 
 }

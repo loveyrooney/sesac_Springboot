@@ -40,42 +40,51 @@ public class JwtTokenProvider {
         return keyFactory.generatePrivate(pkcs8EncodedKeySpec);
     }
 
-    public JwtToken generateToken(String userId) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        String accessToken = Jwts.builder()
-                .setSubject(userId)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + 86400000))
-                .signWith(generateJwtKeyEncryption(), SignatureAlgorithm.RS256)
-                .compact();
+    public JwtToken generateToken(String userId) {
+        try{
+            String accessToken = Jwts.builder()
+                    .setSubject(userId)
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date((new Date()).getTime() + 86400000))
+                    .signWith(generateJwtKeyEncryption(), SignatureAlgorithm.RS256)
+                    .compact();
 
-        String refreshToken = Jwts.builder()
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + 1209600000))
-                .signWith(generateJwtKeyEncryption(), SignatureAlgorithm.RS256)
-                .compact();
+            String refreshToken = Jwts.builder()
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date((new Date()).getTime() + 1209600000))
+                    .signWith(generateJwtKeyEncryption(), SignatureAlgorithm.RS256)
+                    .compact();
 
+            return JwtToken.builder()
+                    .grantType("Bearer")
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println("no such algorithm exception: "+ e.getMessage());
+        } catch (InvalidKeySpecException e) {
+            System.out.println("invalid key exception: "+ e.getMessage());
+        }
         return JwtToken.builder()
-                .grantType("Bearer")
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .build();
+
     }
 
     public String validateJwtToken(String jwtToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(generateJwtKeyDecryption()).build().parseClaimsJws(jwtToken).getBody().getSubject();
         } catch (SecurityException | MalformedJwtException e) {
-            System.out.println("Invalid JWT token: {}"+ e.getMessage());
+            System.out.println("Invalid JWT token: "+ e.getMessage());
         } catch (ExpiredJwtException e) {
-            System.out.println("JWT token is expired: {}"+ e.getMessage());
+            System.out.println("JWT token is expired: "+ e.getMessage());
         } catch (UnsupportedJwtException e) {
-            System.out.println("JWT token is unsupported: {}"+ e.getMessage());
+            System.out.println("JWT token is unsupported: "+ e.getMessage());
         } catch (IllegalArgumentException e) {
-            System.out.println("JWT claims string is empty: {}"+ e.getMessage());
+            System.out.println("JWT claims string is empty: "+ e.getMessage());
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("no such algorithm exception");
+            System.out.println("no such algorithm exception: "+ e.getMessage());
         } catch (InvalidKeySpecException e) {
-            System.out.println("invalid key exception");
+            System.out.println("invalid key exception: "+ e.getMessage());
         }
         return "notValid";
     }
