@@ -33,18 +33,18 @@ public class MainController {
 
     @GetMapping("/")
     public String home(Model model, HttpServletRequest req) {
-        String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        System.out.println("main: "+userId);
+        //String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        //System.out.println("main: "+userId);
         System.out.println("mail: "+req.getHeader("Authorization"));
-//        HttpSession session = req.getSession();
-//        String sessionId = (String)session.getAttribute("sessionId");
-//        System.out.println("session " + sessionId);
+        HttpSession session = req.getSession();
+        String sessionId = (String)session.getAttribute("sessionId");
+        System.out.println("session " + sessionId);
         ArrayList<BoardDTO> boardList = (ArrayList<BoardDTO>) boardService.getBoardList();
         model.addAttribute("list",boardList);
         //System.out.println(boardList.get(0).getBoardTitle());
-        if( userId != null) {
+        if(sessionId != null) {
             model.addAttribute("isLogin", true);
-            model.addAttribute("userid",userId);
+            model.addAttribute("userid",sessionId);
         } else model.addAttribute("isLogin", false);
         return "Main";
     }
@@ -58,13 +58,13 @@ public class MainController {
 
     @GetMapping("/loginHome")
     public String loginHome(Model model, HttpServletRequest req) {
-        String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-//        String userId = securityContext.getAuthentication().getPrincipal().toString();
-//        HttpSession session = req.getSession();
-//        String sessionId = (String)session.getAttribute("sessionId");
-        if(userId != null) {
+        //String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        //String userId = securityContext.getAuthentication().getPrincipal().toString();
+        HttpSession session = req.getSession();
+        String sessionId = (String)session.getAttribute("sessionId");
+        if(sessionId != null) {
             model.addAttribute("isLogin", true);
-            model.addAttribute("userid",userId);
+            model.addAttribute("userid",sessionId);
         } else model.addAttribute("isLogin", false);
         return "login";
     }
@@ -74,14 +74,14 @@ public class MainController {
         String check = userService.checkUser(userDTO);
         switch (check) {
             case "verified" :
-                JwtToken token = userService.login(userDTO);
-                System.out.println("in login controller: "+request.getHeader("Authorization"));
-                HttpHeaders headers = new HttpHeaders();
-                headers.set("Authorization",token.getGrantType()+" "+token.getAccessToken());
-                //headers.set("Set-Cookie",token.getGrantType()+" "+ token.getRefreshToken());
-//                HttpSession session = request.getSession();
-//                session.setAttribute("sessionId", userDTO.getId());
-                return ResponseEntity.status(200).headers(headers).body("ok");
+//                JwtToken token = userService.login(userDTO);
+//                System.out.println("in login controller: "+request.getHeader("Authorization"));
+//                HttpHeaders headers = new HttpHeaders();
+//                headers.set("Authorization",token.getGrantType()+" "+token.getAccessToken());
+//                headers.set("Set-Cookie",token.getGrantType()+" "+ token.getRefreshToken());
+                HttpSession session = request.getSession();
+                session.setAttribute("sessionId", userDTO.getId());
+                return ResponseEntity.status(200).body("ok");
             case "notVerified" :
                 return ResponseEntity.status(400).body("비밀번호가 틀렸습니다.");
             case "notPresent" :
@@ -90,14 +90,15 @@ public class MainController {
         }
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     @ResponseBody
-    public ResponseEntity<Boolean> logout(@RequestBody UserDTO userDTO, HttpServletRequest request) {
-        String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-//        HttpSession session = request.getSession();
-//        String sessionId = (String)session.getAttribute("sessionId");
-        if(userId.equals(userDTO.getId())) {
-//            session.invalidate();
+    public ResponseEntity<Boolean> logout(@RequestParam String userid, HttpServletRequest request) {
+        //String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        HttpSession session = request.getSession();
+        String sessionId = (String)session.getAttribute("sessionId");
+        System.out.println(userid);
+        if(sessionId.equals(userid)) {
+            session.invalidate();
             return ResponseEntity.status(201).body(true);
         } else return ResponseEntity.status(404).body(false);
     }
@@ -130,11 +131,11 @@ public class MainController {
 
     @GetMapping("/users")
     public String users(Model model, HttpServletRequest req) {
-        String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-//        String userId = securityContext.getAuthentication().getPrincipal().toString();
-//        HttpSession session = req.getSession();
-//        String sessionId = (String)session.getAttribute("sessionId");
-        model.addAttribute("userid",userId);
+        //String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        //String userId = securityContext.getAuthentication().getPrincipal().toString();
+        HttpSession session = req.getSession();
+        String sessionId = (String)session.getAttribute("sessionId");
+        model.addAttribute("userid",sessionId);
         return "users";
     }
 
@@ -149,8 +150,8 @@ public class MainController {
     @ResponseBody
     public ResponseEntity<String> deleteUser(@Valid @RequestBody UserDTO userDTO, HttpServletRequest req){
         if(userService.checkUser(userDTO).equals("verified")) {
-//            HttpSession session = req.getSession();
-//            session.invalidate();
+            HttpSession session = req.getSession();
+            session.invalidate();
             userService.deleteUser(userDTO);
             return ResponseEntity.status(201).body("회원 탈퇴 되었습니다.");
         } else return ResponseEntity.status(404).body("비밀번호가 틀렸습니다.");
@@ -160,11 +161,11 @@ public class MainController {
     public String content(@PathVariable int id, Model model, HttpServletRequest req) {
         BoardDTO targetBoard = boardService.getBoardInfo(id);
         ArrayList<ReplyDTO> replyList = (ArrayList<ReplyDTO>) replyService.getReplyList(id);
-        String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        //String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 //        String userId = securityContext.getAuthentication().getPrincipal().toString();
-//        HttpSession session = req.getSession();
-//        String sessionId = (String)session.getAttribute("sessionId");
-        model.addAttribute("userid", Objects.requireNonNullElse(userId, "noname"));
+        HttpSession session = req.getSession();
+        String sessionId = (String)session.getAttribute("sessionId");
+        model.addAttribute("userid", Objects.requireNonNullElse(sessionId, "noname"));
         model.addAttribute("board",targetBoard);
         model.addAttribute("list",replyList);
         return "boardContent";
@@ -172,11 +173,11 @@ public class MainController {
 
     @GetMapping("/write")
     public String write(Model model, HttpServletRequest req) {
-        String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-//        HttpSession session = req.getSession();
-//        String sessionId = (String)session.getAttribute("sessionId");
+        //String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        HttpSession session = req.getSession();
+        String sessionId = (String)session.getAttribute("sessionId");
 //        String userId = securityContext.getAuthentication().getPrincipal().toString();
-        if(userId != null) model.addAttribute("userid", userId);
+        if(sessionId != null) model.addAttribute("userid", sessionId);
         return "boardWrite";
     }
     @PostMapping("/createBoard")
@@ -187,13 +188,13 @@ public class MainController {
 
     @GetMapping("/write/{id}")
     public String boardUpdateHome(@PathVariable int id, Model model, HttpServletRequest req) {
-        String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-//        HttpSession session = req.getSession();
-//        String sessionId = (String)session.getAttribute("sessionId");
+        //String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        HttpSession session = req.getSession();
+        String sessionId = (String)session.getAttribute("sessionId");
 //        String userId = securityContext.getAuthentication().getPrincipal().toString();
-        if(userId != null){
+        if(sessionId != null){
             BoardDTO targetBoard = boardService.getBoardInfo(id);
-            model.addAttribute("userid",userId);
+            model.addAttribute("userid",sessionId);
             model.addAttribute("board",targetBoard);
         }
         else model.addAttribute("userid",false);

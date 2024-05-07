@@ -36,11 +36,11 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                    .antMatchers("/user","/write/**").authenticated()
+                    .antMatchers("/users","/write/**").authenticated()
                     .anyRequest().permitAll()
                     .and()
                 .addFilterBefore(new CorsFilter(), SecurityContextPersistenceFilter.class)
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                //.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

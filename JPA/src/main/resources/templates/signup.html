@@ -53,6 +53,7 @@
                   verify.className = "";
              })
              .catch(error=>{
+                  alert(error.response.data);
                   console.log(error.response.data);
                   //window.location.href = "/signupHome";
              });
@@ -71,6 +72,7 @@
                 window.location.href = "/loginHome";
             })
             .catch(error => {
+                alert(error.response.data);
                 console.log(error.response.data);
             });
         }
